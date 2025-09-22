@@ -1,24 +1,42 @@
-[PROJECT_NAME]
-==============
+Zeltonika
+=========
 
-[PROJECT_NAME] is [DESCRIPTION].
+Zeltonika is a library whose main goal is handling the data of the Teltonika trackers,
+which have 2 different types of data codification: JSON and binary (Teltonika Binary codecs and Teltonika JSON codec).
+This library is lightweight and simple to use as a decoder and encoder for these data formats.
 
 
 Installation
 ------------
-[PROJECT_NAME] is installed [INSTALLATION_DESCRIPTION].
+Compatible Zig Version: `0.16.0`
+
+Zeltonika is installed with the following steps.
+
+```
+zig fetch --save git+https://github.com/epilif3sotnas/zeltonika#v0.1.0
+```
+
+You can then add the dependency in your `build.zig` file:
+```zig
+const zeltonika = b.dependency("zeltonika", .{
+    .target = target,
+    .optimize = optimize,
+}).module("zeltonika");
+
+exe.root_module.addImport(zeltonika);
+```
 
 
 Usage
 -----
-[PROJECT_NAME] is used [USAGE_EXAMPLE].
+Zeltonika is used [USAGE_EXAMPLE].
 
 See this `examples <../examples/>`_.
 
 
 FAQ
 ---
-[PROJECT_NAME] FAQ.
+Zeltonika FAQ.
 
 
 Changelog
