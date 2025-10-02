@@ -32,7 +32,19 @@ You can then add the dependency in your `build.zig` file:
 
 Usage
 -----
-Zeltonika is used [USAGE_EXAMPLE].
+Zeltonika is used in the following example.
+
+.. code-block:: zig
+    :linenos:
+
+    const zeltonika = try Zeltonika.init(allocator, config);
+    defer zeltonika.deinit();
+
+    const encoded_tcp = try zeltonika.encodeTcp(data);
+    const encoded_tcp = try zeltonika.encodeUdp(data);
+
+    const decoded_tcp = try zeltonika.decodeTcp(data);
+    const decoded_tcp = try zeltonika.decodeUdp(data);
 
 See this `examples <../examples/>`_.
 
