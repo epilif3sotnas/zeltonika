@@ -12,19 +12,23 @@ Compatible Zig Version: `0.16.0`
 
 Zeltonika is installed with the following steps.
 
-```
-zig fetch --save git+https://github.com/epilif3sotnas/zeltonika#v0.1.0
-```
+`
+
+zig fetch --save git+https://github.com/epilif3sotnas/zeltonika#<TAG>
+
+`
 
 You can then add the dependency in your `build.zig` file:
-```zig
+`zig
+
 const zeltonika = b.dependency("zeltonika", .{
     .target = target,
     .optimize = optimize,
 }).module("zeltonika");
 
 exe.root_module.addImport(zeltonika);
-```
+
+`
 
 
 Usage
