@@ -91,10 +91,10 @@ pub const Generation = enum(u8) {
     Periodical = 7,
 };
 
-/// I/O element of the AVL data element. This struct has mandatory fields
+/// I/O element of the AVL data element. This struct has fields
 /// as codec_id, event_io_id, and number_of_total_io that are required
 /// across all Codecs for device data sending. Then, there are the other
-/// elements that depending on the codec are populated or not
+/// elements that depending on the codec are populated or not.
 ///
 /// Teltonika codec documentation: https://wiki.teltonika-gps.com/view/Codec
 pub const AvlIoElement = struct {

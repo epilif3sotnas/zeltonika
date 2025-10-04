@@ -34,7 +34,7 @@ pub const AvlDataPacketHeader = struct {
     data_field_length: u32,
 };
 
-/// CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data.
+/// CRC (Cyclic Redundancy Check) is an error-detecting code used to detect accidental changes to RAW data.
 ///
 /// CRC16 represents the CRC16 checksum of the data.
 /// It is calculated from the Codec ID to the Second Number of Data.

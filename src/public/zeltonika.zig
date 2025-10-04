@@ -225,11 +225,11 @@ pub const Zeltonika = struct {
          return result.items;
 	}
 
-	/// Decode a single TCP AVL data packet asynchronously.
+	/// Decode a single TCP AVL data packet from bytes to TcpAvlData.
 	///
 	/// Args:
 	///
-	///     data: The TCP AVL data packet to decode.
+	///     data: The TCP AVL data packet to decode as byte array.
 	///
 	/// Errors:
 	///
@@ -237,7 +237,7 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     A slice of bytes containing the decoded data.
+	///     A pointer to the decoded TcpAvlData.
 	pub fn decodeTcp(self: *const Zeltonika, data: []const u8) ZeltonikaError!*const TcpAvlData {
 	    _ = self;
     	_ = data;
@@ -280,11 +280,11 @@ pub const Zeltonika = struct {
         };
 	}
 
-	/// Decode a bulk of TCP AVL data packets asynchronously.
+	/// Decode a bulk of TCP AVL data packets from byte array to array of pointers to TcpAvlData.
 	///
 	/// Args:
 	///
-	///     data: The array of TCP AVL data packets to decode.
+	///     data: The array of TCP AVL data packets to decode in byte array.
 	///
 	/// Errors:
 	///
@@ -292,7 +292,7 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     An array of slices of bytes containing the decoded data.
+	///     An array of pointers to TcpAvlData containing the decoded data.
 	pub fn decodeTcpBulk(self: *const Zeltonika, data: []const []const u8) ZeltonikaError![]const *const TcpAvlData {
         var result = std.ArrayList(TcpAvlData).init(self.allocator);
         defer result.deinit();
@@ -304,7 +304,7 @@ pub const Zeltonika = struct {
          return result.items;
 	}
 
-	/// Decode a single TCP AVL data packet asynchronously.
+	/// Decode a single TCP AVL data packet asynchronously from byte array to a pointer of TcpAvlData.
 	///
 	/// Args:
 	///
@@ -316,14 +316,14 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     A slice of bytes containing the decoded data.
-	pub fn decodeTcpAsync(self: *const Zeltonika, data: []const u8) ZeltonikaError!TcpAvlData {
+	///     A pointer to TcpAvlData containing the decoded data.
+	pub fn decodeTcpAsync(self: *const Zeltonika, data: []const u8) ZeltonikaError!*const TcpAvlData {
 	    _ = self;
         _ = data;
         return .{};
 	}
 
-	/// Decode a bulk of TCP AVL data packets asynchronously.
+	/// Decode a bulk of TCP AVL data packets asynchronously from byte array to a pointer of TcpAvlData.
 	///
 	/// Args:
 	///
@@ -335,7 +335,7 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     An array of slices of bytes containing the decoded data.
+	///     An array of pointers to TcpAvlData containing the decoded data.
 	pub fn decodeTcpAsyncBulk(self: *const Zeltonika, data: []const []const u8) ZeltonikaError![]const *const TcpAvlData {
 	    var result = std.ArrayList(TcpAvlData).init(self.allocator);
         defer result.deinit();
@@ -347,7 +347,7 @@ pub const Zeltonika = struct {
          return result.items;
 	}
 
-	/// Decode a single UDP AVL data packet.
+	/// Decode a single UDP AVL data packet from byte array to a pointer of UdpAvlData.
 	///
 	/// Args:
 	///
@@ -359,7 +359,7 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     A slice of bytes containing the decoded data.
+	///     A pointer to UdpAvlData containing the decoded data.
 	pub fn decodeUdp(self: *const Zeltonika, data: []const u8) ZeltonikaError!*const UdpAvlData {
 	    _ = self;
     	_ = data;
@@ -409,7 +409,7 @@ pub const Zeltonika = struct {
         };
 	}
 
-	/// Decode a bulk of UDP AVL data packets.
+	/// Decode a bulk of UDP AVL data packets from byte array to a pointer of UdpAvlData.
 	///
 	/// Args:
 	///
@@ -421,7 +421,7 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     An array of slices of bytes containing the decoded data.
+	///     An array of pointers to UdpAvlData containing the decoded data.
 	pub fn decodeUdpBulk(self: *const Zeltonika, data: []const []const u8) ZeltonikaError![]const *const UdpAvlData {
         var result = std.ArrayList(UdpAvlData).init(self.allocator);
         defer result.deinit();
@@ -433,7 +433,7 @@ pub const Zeltonika = struct {
          return result.items;
 	}
 
-	/// Decode a single UDP AVL data packet asynchronously.
+	/// Decode a single UDP AVL data packet asynchronously from byte array to a pointer of UdpAvlData.
 	///
 	/// Args:
 	///
@@ -445,14 +445,14 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     A slice of bytes containing the decoded data.
+	///     A pointer to UdpAvlData containing the decoded data.
 	pub fn decodeUdpAsync(self: *const Zeltonika, data: []const u8) ZeltonikaError!*const UdpAvlData {
 	    _ = self;
         _ = data;
         return .{};
 	}
 
-	/// Decode a bulk of UDP AVL data packets asynchronously.
+	/// Decode a bulk of UDP AVL data packets asynchronously from byte array to a pointer of UdpAvlData.
 	///
 	/// Args:
 	///
@@ -464,7 +464,7 @@ pub const Zeltonika = struct {
 	///
 	/// Returns:
 	///
-	///     An array of slices of bytes containing the decoded data.
+	///     An array of pointers to UdpAvlData containing the decoded data.
 	pub fn decodeUdpAsyncBulk(self: *const Zeltonika, data: []const []const u8) ZeltonikaError![]const *const UdpAvlData {
 	    var result = std.ArrayList(*const UdpAvlData).init(self.allocator);
         defer result.deinit();
