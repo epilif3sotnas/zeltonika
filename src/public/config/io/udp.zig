@@ -10,7 +10,7 @@ pub const ConfigUdp = struct {
 };
 
 /// Configuration options for the client.
-const ConfigUdpClient = struct {};
+pub const ConfigUdpClient = struct {};
 
 /// Configuration options for the server.
-const ConfigUdpServer = struct {};
+pub const ConfigUdpServer = struct {};
