@@ -12,24 +12,39 @@ Compatible Zig Version: `0.16.0`
 
 Zeltonika is installed with the following steps.
 
-```
-zig fetch --save git+https://github.com/epilif3sotnas/zeltonika#v0.1.0
-```
+.. code-block:: bash
+    :linenos:
+
+    zig fetch --save git+https://github.com/epilif3sotnas/zeltonika#<TAG>
 
 You can then add the dependency in your `build.zig` file:
-```zig
-const zeltonika = b.dependency("zeltonika", .{
-    .target = target,
-    .optimize = optimize,
-}).module("zeltonika");
 
-exe.root_module.addImport(zeltonika);
-```
+.. code-block:: zig
+    :linenos:
+
+    const zeltonika = b.dependency("zeltonika", .{
+        .target = target,
+        .optimize = optimize,
+    }).module("zeltonika");
+
+    exe.root_module.addImport(zeltonika);
 
 
 Usage
 -----
-Zeltonika is used [USAGE_EXAMPLE].
+Zeltonika is used in the following example.
+
+.. code-block:: zig
+    :linenos:
+
+    const zeltonika = try Zeltonika.init(allocator, config);
+    defer zeltonika.deinit();
+
+    const encoded_tcp = try zeltonika.encodeTcp(data);
+    const encoded_tcp = try zeltonika.encodeUdp(data);
+
+    const decoded_tcp = try zeltonika.decodeTcp(data);
+    const decoded_tcp = try zeltonika.decodeUdp(data);
 
 See this `examples <../examples/>`_.
 
