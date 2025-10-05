@@ -1,6 +1,5 @@
 Zeltonika
 =========
-
 Zeltonika is a library whose main goal is handling the data of the Teltonika trackers,
 which have 2 different types of data codification: JSON and binary (Teltonika Binary codecs and Teltonika JSON codec).
 This library is lightweight and simple to use as a decoder and encoder for these data formats.
@@ -41,10 +40,10 @@ Zeltonika is used in the following example.
     defer zeltonika.deinit();
 
     const encoded_tcp = try zeltonika.encodeTcp(data);
-    const encoded_tcp = try zeltonika.encodeUdp(data);
+    const encoded_udp = try zeltonika.encodeUdp(data);
 
     const decoded_tcp = try zeltonika.decodeTcp(data);
-    const decoded_tcp = try zeltonika.decodeUdp(data);
+    const decoded_udp = try zeltonika.decodeUdp(data);
 
 See this `examples <../examples/>`_.
 

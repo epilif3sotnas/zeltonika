@@ -3,5 +3,5 @@ const std = @import("std");
 
 
 test "Root of unit tests" {
-    try std.testing.expect(false);
+    _ = @import("internal/handler/transport/crc/crc.zig");
 }
