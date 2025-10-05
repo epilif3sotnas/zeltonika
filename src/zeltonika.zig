@@ -3,8 +3,16 @@
 //! This library is lightweight and simple to use as a decoder and encoder for these data formats.
 //!
 //! Example usage:
+//! ```
+//! const zeltonika = try Zeltonika.init(allocator, config);
+//! defer zeltonika.deinit();
 //!
-//! TODO: Add example usage
+//! const encoded_tcp = try zeltonika.encodeTcp(data);
+//! const encoded_udp = try zeltonika.encodeUdp(data);
+//!
+//! const decoded_tcp = try zeltonika.decodeTcp(data);
+//! const decoded_udp = try zeltonika.decodeUdp(data);
+//! ```
 
 // main structs
 pub const ZeltonikaConfig = @import("public/config/config.zig").ZeltonikaConfig;

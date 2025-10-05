@@ -41,21 +41,21 @@ fn projectProperties(b: *std.Build) ProjectProperties {
 
         .unit_tests = .{
             .name = "unit-tests",
-            .root_source_file = b.path("tests/unit_tests/tests.zig"),
+            .root_source_file = b.path("src/unit_tests.zig"),
             .dependencies = &[_][]const u8{},
             .description = "Zeltonika unit tests.",
         },
 
         .integration_tests = .{
             .name = "integration-tests",
-            .root_source_file = b.path("tests/integration_tests/tests.zig"),
+            .root_source_file = b.path("src/integration_tests.zig"),
             .dependencies = &[_][]const u8{},
             .description = "Zeltonika integration tests.",
         },
 
         .bench = .{
             .name = "bench-tests",
-            .root_source_file = b.path("tests/bench/tests.zig"),
+            .root_source_file = b.path("src/bench_tests.zig"),
             .dependencies = &[_][]const u8{ "zbench" },
             .description = "Zeltonika benchmark tests.",
         },
