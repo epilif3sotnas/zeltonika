@@ -3,10 +3,10 @@
 pub const ConfigUdp = struct {
 
     /// Configuration options for the client.
-    pub const client: *const ConfigUdpClient = .{};
+    client: *const ConfigUdpClient = &ConfigUdpClient{},
 
     /// Configuration options for the server.
-    pub const server: *const ConfigUdpServer = .{};
+    server: *const ConfigUdpServer = &ConfigUdpServer{},
 };
 
 /// Configuration options for the client.
