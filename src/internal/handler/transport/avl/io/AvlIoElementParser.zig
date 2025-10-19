@@ -32,20 +32,20 @@ pub fn init() AvlIoElementParser {
 pub fn deinit(_: *const AvlIoElementParser) void {}
 
 pub fn encodeBin(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, buffer: *ByteBuffer) !void {
-    const avl_io: AvlIo = switch (avl_io_element.codec_id) {
-        CodecId.Codec8 => .{
+    const avl_io: *const AvlIo = switch (avl_io_element.codec_id) {
+        CodecId.Codec8 => &.{
             .Codec8 = .{
                 .event_io_id = @intCast(avl_io_element.event_io_id),
                 .number_of_total_io = @intCast(avl_io_element.number_of_total_io),
             }
         },
-        CodecId.Codec8Extended => .{
+        CodecId.Codec8Extended => &.{
             .Codec8e = .{
                 .event_io_id = @intCast(avl_io_element.event_io_id),
                 .number_of_total_io = @intCast(avl_io_element.number_of_total_io),
             }
         },
-        CodecId.Codec16 => .{
+        CodecId.Codec16 => &.{
             .Codec16 = .{
                 .event_io_id = @intCast(avl_io_element.event_io_id),
                 .number_of_total_io = @intCast(avl_io_element.number_of_total_io),
@@ -61,7 +61,7 @@ pub fn encodeBin(self: *const AvlIoElementParser, avl_io_element: *const AvlIoEl
     }
 }
 
-fn encodeBinCodec8(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, avl_io: AvlIo, buffer: *ByteBuffer) !void {
+fn encodeBinCodec8(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, avl_io: *const AvlIo, buffer: *ByteBuffer) !void {
     try self.encodeBinIoElementCommon(avl_io, buffer);
     try self.encodeBinNIoElements(u8, u8, [1]u8, avl_io_element.n1_elements.?, buffer);
     try self.encodeBinNIoElements(u8, u8, [2]u8, avl_io_element.n2_elements.?, buffer);
@@ -69,7 +69,7 @@ fn encodeBinCodec8(self: *const AvlIoElementParser, avl_io_element: *const AvlIo
     try self.encodeBinNIoElements(u8, u8, [8]u8, avl_io_element.n8_elements.?, buffer);
 }
 
-fn encodeBinCodec8e(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, avl_io: AvlIo, buffer: *ByteBuffer) !void {
+fn encodeBinCodec8e(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, avl_io: *const AvlIo, buffer: *ByteBuffer) !void {
     try self.encodeBinIoElementCommon(avl_io, buffer);
     try self.encodeBinNIoElements(u16, u16, [1]u8, avl_io_element.n1_elements.?, buffer);
     try self.encodeBinNIoElements(u16, u16, [2]u8, avl_io_element.n2_elements.?, buffer);
@@ -78,7 +78,7 @@ fn encodeBinCodec8e(self: *const AvlIoElementParser, avl_io_element: *const AvlI
     try self.encodeBinNIoElements(u16, u16, []const u8, avl_io_element.nx_elements.?, buffer);
 }
 
-fn encodeBinCodec16(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, avl_io: AvlIo, buffer: *ByteBuffer) !void {
+fn encodeBinCodec16(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, avl_io: *const AvlIo, buffer: *ByteBuffer) !void {
     try self.encodeBinIoElementCommon(avl_io, buffer);
     try self.encodeBinNIoElements(u8, u16, [1]u8, avl_io_element.n1_elements.?, buffer);
     try self.encodeBinNIoElements(u8, u16, [2]u8, avl_io_element.n2_elements.?, buffer);
@@ -86,8 +86,8 @@ fn encodeBinCodec16(self: *const AvlIoElementParser, avl_io_element: *const AvlI
     try self.encodeBinNIoElements(u8, u16, [8]u8, avl_io_element.n8_elements.?, buffer);
 }
 
-fn encodeBinIoElementCommon(_: *const AvlIoElementParser, avl_io: AvlIo, buffer: *ByteBuffer) !void {
-    switch (avl_io) {
+fn encodeBinIoElementCommon(_: *const AvlIoElementParser, avl_io: *const AvlIo, buffer: *ByteBuffer) !void {
+    switch (avl_io.*) {
         .Codec8 => try buffer.put(avl_io.Codec8),
         .Codec8e => try buffer.put(avl_io.Codec8e),
         .Codec16 => try buffer.put(avl_io.Codec16),
