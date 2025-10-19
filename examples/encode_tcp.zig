@@ -62,7 +62,7 @@ pub fn main() !void {
     const encoded_tcp = try zeltonika.encodeTcp(data_tcp);
     const encoded_buffer = try allocator.alloc(u8, encoded_tcp.len * 2);
     defer allocator.free(encoded_buffer);
-    const encoded_tcp_hex = try std.fmt.bufPrint(encoded_buffer, "{}", .{ std.fmt.fmtSliceHexLower(encoded_tcp) });
+    const encoded_tcp_hex = try std.fmt.bufPrint(encoded_buffer, "{f}", .{ std.ascii.hexEscape(encoded_tcp, std.fmt.Case.lower) });
 
     std.debug.print("\nEncoded TCP Hex string: {s}\n", .{ encoded_tcp_hex });
 }

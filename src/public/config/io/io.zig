@@ -8,8 +8,8 @@ const ConfigUdp = @import("udp.zig").ConfigUdp;
 pub const ConfigIoConn = struct {
 
    /// Configuration for the TCP connection.
-    const tcp: *const ConfigTcp = .{};
+    tcp: *const ConfigTcp = &ConfigTcp{},
 
     /// Configuration for the UDP connection.
-    const udp: *const ConfigUdp = .{};
+    udp: *const ConfigUdp = &ConfigUdp{},
 };

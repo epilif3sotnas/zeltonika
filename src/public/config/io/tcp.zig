@@ -3,10 +3,10 @@
 pub const ConfigTcp = struct {
 
     /// Configuration options for the client.
-    pub const client: *const ConfigTcpClient = .{};
+    client: *const ConfigTcpClient = &ConfigTcpClient{},
 
     /// Configuration options for the server.
-    pub const server: *const ConfigTcpServer = .{};
+    server: *const ConfigTcpServer = &ConfigTcpServer{},
 };
 
 /// Configuration options for the client.

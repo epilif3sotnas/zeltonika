@@ -109,20 +109,39 @@ pub const AvlIoElement = struct {
     number_of_total_io: u16,
 
     /// Generation type of the I/O element.
-    pub const generation_type: ?Generation = null;
+    generation_type: ?Generation = null,
 
     /// N1 elements of the I/O element.
-    pub const n1_elements: ?std.AutoHashMap(u16, [1]u8) = null;
+    n1_elements: ?std.AutoArrayHashMap(u16, [1]u8) = null,
 
     /// N2 elements of the I/O element.
-    pub const n2_elements: ?std.AutoHashMap(u16, [2]u8) = null;
+    n2_elements: ?std.AutoArrayHashMap(u16, [2]u8) = null,
 
     /// N4 elements of the I/O element.
-    pub const n4_elements: ?std.AutoHashMap(u16, [4]u8) = null;
+    n4_elements: ?std.AutoArrayHashMap(u16, [4]u8) = null,
 
     /// N8 elements of the I/O element.
-    pub const n8_elements: ?std.AutoHashMap(u16, [8]u8) = null;
+    n8_elements: ?std.AutoArrayHashMap(u16, [8]u8) = null,
 
     /// Nx elements of the I/O element.
-    pub const nx_elements: ?std.AutoHashMap(u16, []const u8) = null;
+    nx_elements: ?std.AutoArrayHashMap(u16, []const u8) = null,
+
+    /// Deinitializes the I/O element.
+    pub fn deinit(self: *AvlIoElement) void {
+        if (self.n1_elements) |*n1_elements| {
+            n1_elements.deinit();
+        }
+        if (self.n2_elements) |*n2_elements| {
+            n2_elements.deinit();
+        }
+        if (self.n4_elements) |*n4_elements| {
+            n4_elements.deinit();
+        }
+        if (self.n8_elements) |*n8_elements| {
+            n8_elements.deinit();
+        }
+        if (self.nx_elements) |*nx_elements| {
+            nx_elements.deinit();
+        }
+    }
 };

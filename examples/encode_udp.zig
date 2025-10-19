@@ -69,7 +69,7 @@ pub fn main() !void {
     const encoded_udp = try zeltonika.encodeUdp(data_udp);
     const encoded_buffer = try allocator.alloc(u8, encoded_udp.len * 2);
     defer allocator.free(encoded_buffer);
-    const encoded_udp_hex = try std.fmt.bufPrint(encoded_buffer, "{}", .{ std.fmt.fmtSliceHexLower(encoded_udp) });
+    const encoded_udp_hex = try std.fmt.bufPrint(encoded_buffer, "{f}", .{ std.ascii.hexEscape(encoded_udp, std.fmt.Case.lower) });
 
     std.debug.print("\nEncoded UDP Hex string: {s}\n", .{ encoded_udp_hex });
 }

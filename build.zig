@@ -76,9 +76,9 @@ pub fn build(b: *std.Build) void {
     const mod = createModule(b, build_options, project_properties.module);
     const lib = createLibrary(b, mod, project_properties.module);
     const docs = createDocs(b, lib);
-    const unit_tests = createTest(b, project_properties.unit_tests);
-    const integration_tests = createTest(b, project_properties.integration_tests);
-    const bench = createTest(b, project_properties.bench);
+    const unit_tests = createTest(b, build_options, project_properties.unit_tests);
+    const integration_tests = createTest(b, build_options, project_properties.integration_tests);
+    const bench = createTest(b, build_options, project_properties.bench);
 
     addDependencies(b, mod, project_properties.module);
     addDependenciesTests(b, unit_tests, project_properties.unit_tests);
@@ -115,9 +115,7 @@ fn createExecutable(
 ) *std.Build.Step.Compile {
     return b.addExecutable(.{
         .name = config.name,
-        .root_source_file = config.root_source_file,
-        .target = build_options.target,
-        .optimize = build_options.optimize,
+        .root_module = createModule(b, build_options, config),
     });
 }
 
@@ -145,11 +143,12 @@ fn createDocs(
 
 fn createTest(
     b: *std.Build,
+    build_options: BuildOptions,
     config: ConfigProperties,
 ) *std.Build.Step.Compile {
     return b.addTest(.{
         .name = config.name,
-        .root_source_file = config.root_source_file,
+        .root_module = createModule(b, build_options, config),
     });
 }
 

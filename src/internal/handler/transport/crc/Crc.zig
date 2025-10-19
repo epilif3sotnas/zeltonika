@@ -18,8 +18,8 @@ const TeltonikaCrc = std.hash.crc.Crc(
 );
 
 
-pub fn init() *const Crc {
-    return &.{};
+pub fn init() Crc {
+    return .{};
 }
 
 pub fn deinit(_: *const Crc) void {}
