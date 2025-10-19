@@ -6,7 +6,7 @@ const AvlIoElementParser = @import("../../../../../../../internal/handler/transp
 const ByteBuffer = @import("../../../../../../../internal/utils/ByteBuffer.zig").ByteBuffer;
 const AvlIoElement = @import("../../../../../../../public/avl_data/avl_data_array.zig").AvlIoElement;
 const CodecId = @import("../../../../../../../public/avl_data/avl_data_array.zig").CodecId;
-const AvlIoElementParserHelper = @import("avl_io_elment_parser_helper.zig");
+const AvlIoElementParserHelper = @import("avl_io_element_parser_helper.zig");
 
 
 test "encodeBin should write to the byte buffer a valid codec 8 byte array" {
