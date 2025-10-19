@@ -404,6 +404,21 @@ test "put should add bytes with nested structs to the ByteBuffer without error" 
     try testing.expectEqual(expected_len, actual_len);
 }
 
+test "put should return an ReadOnlyBuffer error when the the buffer is set as read only" {
+    const allocator = std.testing.allocator;
+
+    var buffer = ByteBuffer.init(allocator);
+    defer buffer.deinit();
+    buffer.setReadOnly();
+
+    const buffer_data: u8 = 0x01;
+
+    const expected = ByteBufferError.ReadOnlyBuffer;
+    const actual = buffer.put(buffer_data);
+
+    try testing.expectError(expected, actual);
+}
+
 test "put should return an InvalidIntegerType error when the T type is not power of 2 bytes (integers)" {
     const allocator = std.testing.allocator;
 

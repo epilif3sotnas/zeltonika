@@ -12,6 +12,7 @@ pub const ByteBufferError = error{
     InvalidIntegerType,
     InvalidFloatType,
     ByteNotSupported,
+    ReadOnlyBuffer,
 };
 
 
@@ -53,11 +54,11 @@ pub fn deinit(self: *ByteBuffer) void {
     self._array.deinit(self._allocator);
 }
 
-pub fn arrayCapacity(self: *ByteBuffer) usize {
+pub fn arrayCapacity(self: *const ByteBuffer) usize {
     return self._array.capacity;
 }
 
-pub fn position(self: *ByteBuffer) usize {
+pub fn position(self: *const ByteBuffer) usize {
     return self._pos;
 }
 
@@ -73,7 +74,7 @@ pub fn setNewPosition(self: *ByteBuffer, new_position: usize) !void {
     self._pos = new_position;
 }
 
-pub fn isReadOnly(self: *ByteBuffer) bool {
+pub fn isReadOnly(self: *const ByteBuffer) bool {
     return self._read_only;
 }
 
@@ -81,19 +82,19 @@ pub fn setReadOnly(self: *ByteBuffer) void {
     self._read_only = true;
 }
 
-pub fn size(self: *ByteBuffer) usize {
+pub fn size(self: *const ByteBuffer) usize {
     return self._array.items.len;
 }
 
-pub fn array(self: *ByteBuffer) []const u8 {
+pub fn array(self: *const ByteBuffer) []const u8 {
     return self._array.items;
 }
 
-pub fn arrayFromPosition(self: *ByteBuffer) []const u8 {
+pub fn arrayFromPosition(self: *const ByteBuffer) []const u8 {
     return self._array.items[self._pos..];
 }
 
-pub fn arrayToPosition(self: *ByteBuffer) []const u8 {
+pub fn arrayToPosition(self: *const ByteBuffer) []const u8 {
     return self._array.items[0..self._pos + 1];
 }
 
@@ -165,7 +166,7 @@ pub fn get(self: *ByteBuffer, comptime T: type) !T {
     };
 }
 
-fn sizeOf(self: *ByteBuffer, comptime T: type) usize {
+fn sizeOf(self: *const ByteBuffer, comptime T: type) usize {
     return bytes: {
         var total: usize = 0;
 
@@ -184,6 +185,10 @@ fn sizeOf(self: *ByteBuffer, comptime T: type) usize {
 }
 
 pub fn put(self: *ByteBuffer, value: anytype) !void {
+    if (self.isReadOnly()) {
+        return ByteBufferError.ReadOnlyBuffer;
+    }
+
     const T = @TypeOf(value);
 
     switch (@typeInfo(T)) {
@@ -237,6 +242,6 @@ pub fn put(self: *ByteBuffer, value: anytype) !void {
     }
 }
 
-pub fn print(self: *ByteBuffer) void {
+pub fn print(self: *const ByteBuffer) void {
     std.debug.print("Buffer Content: {any}\nBuffer Size: {any}\nPosition: {any}\nRead Only: {any}\n\n", .{ self._array.items, self._array.items.len, self._pos, self._read_only });
 }
