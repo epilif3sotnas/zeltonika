@@ -6,8 +6,15 @@ const AvlIoElementParser = @import("../../../../../../../internal/handler/transp
 const ByteBuffer = @import("../../../../../../../internal/utils/ByteBuffer.zig").ByteBuffer;
 const AvlIoElement = @import("../../../../../../../public/avl_data/avl_data_array.zig").AvlIoElement;
 const CodecId = @import("../../../../../../../public/avl_data/avl_data_array.zig").CodecId;
-const AvlIoElementParserHelper = @import("avl_io_element_parser_helper.zig");
+const HelperAvlIoElementCodec8 = @import("../../../../../../helpers/internal/handler/transport/avl/io/helper_avl_io_element_codec_8.zig");
+const HelperAvlIoElementCodec8e = @import("../../../../../../helpers/internal/handler/transport/avl/io/helper_avl_io_element_codec_8e.zig");
+const HelperAvlIoElementCodec16 = @import("../../../../../../helpers/internal/handler/transport/avl/io/helper_avl_io_element_codec_16.zig");
 
+
+test "AvlIoElementParser.init - smoke test" {
+    const avl_io_element_parser = AvlIoElementParser.init();
+    defer avl_io_element_parser.deinit();
+}
 
 test "encodeBin should write to the byte buffer a valid codec 8 byte array" {
     const allocator = std.testing.allocator;
@@ -18,10 +25,10 @@ test "encodeBin should write to the byte buffer a valid codec 8 byte array" {
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
-    var input = try AvlIoElementParserHelper.CODEC_8_AVL_IO_ELEMENT(allocator);
+    var input = try HelperAvlIoElementCodec8.AVL_IO_ELEMENT(allocator);
     defer input.deinit();
 
-    const expected = AvlIoElementParserHelper.CODEC_8_BYTE_ARRAY;
+    const expected = HelperAvlIoElementCodec8.BYTE_ARRAY;
 
     try avl_io_element_parser.encodeBin(&input, &buffer);
     const actual = buffer.array();
@@ -38,10 +45,10 @@ test "encodeBin should write to the byte buffer a valid codec 8e byte array" {
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
-    var input = try AvlIoElementParserHelper.CODEC_8E_AVL_IO_ELEMENT(allocator);
+    var input = try HelperAvlIoElementCodec8e.AVL_IO_ELEMENT(allocator);
     defer input.deinit();
 
-    const expected = AvlIoElementParserHelper.CODEC_8E_BYTE_ARRAY;
+    const expected = HelperAvlIoElementCodec8e.BYTE_ARRAY;
 
     try avl_io_element_parser.encodeBin(&input, &buffer);
     const actual = buffer.array();
@@ -58,10 +65,10 @@ test "encodeBin should write to the byte buffer a valid codec 16 byte array" {
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
-    var input = try AvlIoElementParserHelper.CODEC_16_AVL_IO_ELEMENT(allocator);
+    var input = try HelperAvlIoElementCodec16.AVL_IO_ELEMENT(allocator);
     defer input.deinit();
 
-    const expected = AvlIoElementParserHelper.CODEC_16_BYTE_ARRAY;
+    const expected = HelperAvlIoElementCodec16.BYTE_ARRAY;
 
     try avl_io_element_parser.encodeBin(&input, &buffer);
     const actual = buffer.array();
@@ -72,7 +79,7 @@ test "encodeBin should write to the byte buffer a valid codec 16 byte array" {
 test "decodeBin should write to the byte buffer a valid codec 8 byte array" {
     const allocator = std.testing.allocator;
 
-    const data_to_decode = AvlIoElementParserHelper.CODEC_8_BYTE_ARRAY;
+    const data_to_decode = HelperAvlIoElementCodec8.BYTE_ARRAY;
 
     var buffer = try ByteBuffer.initBuffer(allocator, data_to_decode);
     defer buffer.deinit();
@@ -81,7 +88,7 @@ test "decodeBin should write to the byte buffer a valid codec 8 byte array" {
     const avl_io_element_parser = AvlIoElementParser.init();
     defer avl_io_element_parser.deinit();
 
-    var expected = try AvlIoElementParserHelper.CODEC_8_AVL_IO_ELEMENT(allocator);
+    var expected = try HelperAvlIoElementCodec8.AVL_IO_ELEMENT(allocator);
     defer expected.deinit();
     var actual = try avl_io_element_parser.decodeBin(allocator, &buffer, CodecId.Codec8);
     defer actual.deinit();
@@ -104,7 +111,7 @@ test "decodeBin should write to the byte buffer a valid codec 8 byte array" {
 test "decodeBin should write to the byte buffer a valid codec 8e byte array" {
     const allocator = std.testing.allocator;
 
-    const data_to_decode = AvlIoElementParserHelper.CODEC_8E_BYTE_ARRAY;
+    const data_to_decode = HelperAvlIoElementCodec8e.BYTE_ARRAY;
 
     var buffer = try ByteBuffer.initBuffer(allocator, data_to_decode);
     defer buffer.deinit();
@@ -113,7 +120,7 @@ test "decodeBin should write to the byte buffer a valid codec 8e byte array" {
     const avl_io_element_parser = AvlIoElementParser.init();
     defer avl_io_element_parser.deinit();
 
-    var expected = try AvlIoElementParserHelper.CODEC_8E_AVL_IO_ELEMENT(allocator);
+    var expected = try HelperAvlIoElementCodec8e.AVL_IO_ELEMENT(allocator);
     defer expected.deinit();
     var actual = try avl_io_element_parser.decodeBin(allocator, &buffer, CodecId.Codec8Extended);
     defer actual.deinit();
@@ -138,7 +145,7 @@ test "decodeBin should write to the byte buffer a valid codec 8e byte array" {
 test "decodeBin should write to the byte buffer a valid codec 16 byte array" {
     const allocator = std.testing.allocator;
 
-    const data_to_decode = AvlIoElementParserHelper.CODEC_16_BYTE_ARRAY;
+    const data_to_decode = HelperAvlIoElementCodec16.BYTE_ARRAY;
 
     var buffer = try ByteBuffer.initBuffer(allocator, data_to_decode);
     defer buffer.deinit();
@@ -147,7 +154,7 @@ test "decodeBin should write to the byte buffer a valid codec 16 byte array" {
     const avl_io_element_parser = AvlIoElementParser.init();
     defer avl_io_element_parser.deinit();
 
-    var expected = try AvlIoElementParserHelper.CODEC_16_AVL_IO_ELEMENT(allocator);
+    var expected = try HelperAvlIoElementCodec16.AVL_IO_ELEMENT(allocator);
     defer expected.deinit();
     var actual = try avl_io_element_parser.decodeBin(allocator, &buffer, CodecId.Codec16);
     defer actual.deinit();

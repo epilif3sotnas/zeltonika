@@ -10,16 +10,16 @@ const AvlDataArray = @import("avl_data_array.zig").AvlDataArray;
 pub const UdpAvlData = struct {
 
     /// Data containing the UDP channel header.
-    udp_channel_header: *const UdpChannelHeader,
+    udp_channel_header: UdpChannelHeader,
 
     /// Data containing the AVL packet header.
-    avl_packet_header: *const AvlPacketHeader,
+    avl_packet_header: AvlPacketHeader,
 
     /// Data containing the AVL data array.
-    avl_data_array: *const AvlDataArray,
+    avl_data_array: AvlDataArray,
 
     /// Data containing the response to be sent back to the device.
-    response: *const UdpAvlResponse,
+    response: UdpAvlResponse,
 };
 
 /// UdpChannelHeader represents the data contained in

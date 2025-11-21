@@ -15,6 +15,8 @@ pub const ByteBufferError = error{
     ReadOnlyBuffer,
 };
 
+pub const ByteBuferCombinedError = ByteBufferError || Allocator.Error;
+
 
 pub const ByteBuffer = @This();
 
@@ -66,7 +68,7 @@ pub fn resetPosition(self: *ByteBuffer) void {
     self._pos = 0;
 }
 
-pub fn setNewPosition(self: *ByteBuffer, new_position: usize) !void {
+pub fn setNewPosition(self: *ByteBuffer, new_position: usize) ByteBufferError!void {
     if (new_position >= self._array.items.len) {
         return error.PositionOutOfBounds;
     }
@@ -98,7 +100,7 @@ pub fn arrayToPosition(self: *const ByteBuffer) []const u8 {
     return self._array.items[0..self._pos + 1];
 }
 
-pub fn get(self: *ByteBuffer, comptime T: type) !T {
+pub fn get(self: *ByteBuffer, comptime T: type) ByteBufferError!T {
     if (self._array.items.len - self._pos < self.sizeOf(T)) {
         return ByteBufferError.NotEnoughData;
     }
@@ -184,7 +186,7 @@ fn sizeOf(self: *const ByteBuffer, comptime T: type) usize {
     };
 }
 
-pub fn put(self: *ByteBuffer, value: anytype) !void {
+pub fn put(self: *ByteBuffer, value: anytype) ByteBuferCombinedError!void {
     if (self.isReadOnly()) {
         return ByteBufferError.ReadOnlyBuffer;
     }

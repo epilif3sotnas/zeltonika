@@ -21,7 +21,7 @@ pub const AvlDataArray = struct {
     codec_id: CodecId,
 
     /// Array of AVL data elements.
-    data: []const *const AvlData,
+    data: []const AvlData,
 };
 
 /// Enum which defines AVL data priority.
@@ -45,10 +45,10 @@ pub const AvlData = struct {
     priority: Priority,
 
     /// GPS element of the AVL data element.
-    gps_element: *const GpsElement,
+    gps_element: GpsElement,
 
     /// I/O element of the AVL data element.
-    io_element: *const AvlIoElement,
+    io_element: AvlIoElement,
 };
 
 /// GpsElement represents all the fields that the
@@ -72,7 +72,7 @@ pub const GpsElement = struct {
     /// Number of satellites of the GPS element.
     satellites: u8,
 
-    /// Speed of the GPS element.
+    /// Speed of the GPS element (km/h).
     speed: u16,
 };
 

@@ -9,6 +9,7 @@ const AvlIoCodec16 = @import("models/AvlIoCodec16.zig").AvlIoCodec16;
 const AvlIoElement = @import("../../../../../public/avl_data/avl_data_array.zig").AvlIoElement;
 const CodecId = @import("../../../../../public/avl_data/avl_data_array.zig").CodecId;
 const ByteBuffer = @import("../../../../utils/ByteBuffer.zig").ByteBuffer;
+const IAvlIoElementParser = @import("avl_io_element_parser.zig").IAvlIoElementParser;
 
 
 pub const AvlIoElementParser = @This();
@@ -26,12 +27,15 @@ const AvlIo = union(AvlIoType) {
 
 
 pub fn init() AvlIoElementParser {
-    return .{};
+    const avl_io_element_parser = AvlIoElementParser{};
+    comptime IAvlIoElementParser.validation.satisfiedBy(@TypeOf(avl_io_element_parser));
+
+    return avl_io_element_parser;
 }
 
 pub fn deinit(_: *const AvlIoElementParser) void {}
 
-pub fn encodeBin(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, buffer: *ByteBuffer) !void {
+pub fn encodeBin(self: *const AvlIoElementParser, avl_io_element: *const AvlIoElement, buffer: *ByteBuffer) ByteBuffer.ByteBuferCombinedError!void {
     const avl_io: *const AvlIo = switch (avl_io_element.codec_id) {
         CodecId.Codec8 => &.{
             .Codec8 = .{
@@ -119,7 +123,7 @@ pub fn decodeBin(
     allocator: Allocator,
     buffer: *ByteBuffer,
     codec_id: CodecId,
-) !AvlIoElement {
+) ByteBuffer.ByteBuferCombinedError!AvlIoElement {
     return switch (codec_id) {
         .Codec8 => self.decodeBinCodec8(allocator, buffer, codec_id),
         .Codec8Extended => self.decodeBinCodec8e(allocator, buffer, codec_id),
