@@ -2,7 +2,7 @@
 const std = @import("std");
 
 
-const TELTONIKA_PRECISION: u32 = 10_000_000;
+const TELTONIKA_PRECISION = 10_000_000;
 
 
 pub fn convertCoordinateToTeltonikaFormat(coordinate: f64) i32 {
