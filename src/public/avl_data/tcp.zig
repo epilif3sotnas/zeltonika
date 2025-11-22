@@ -10,16 +10,16 @@ const AvlDataArray = @import("avl_data_array.zig").AvlDataArray;
 pub const TcpAvlData = struct {
 
     /// AvlDataPacketHeader represents the header of an TCP data packet.
-    avl_data_packet_header: *const AvlDataPacketHeader,
+    avl_data_packet_header: AvlDataPacketHeader,
 
     /// AvlDataArray represents the array of AVL data.
-    avl_data_array: *const AvlDataArray,
+    avl_data_array: AvlDataArray,
 
     /// CRC16 checksum of the data.
-    crc_16: *const Crc16,
+    crc_16: Crc16,
 
     /// Data containing the response to be sent back to the device.
-    response: *const TcpAvlResponse,
+    response: TcpAvlResponse,
 };
 
 /// AvlDataPacketHeader represents the header of an TCP data packet.

@@ -1,6 +1,9 @@
 // std
 const std = @import("std");
 
+// internal
+const ICrc = @import("ICrc.zig").ICrc;
+
 
 pub const Crc = @This();
 
@@ -19,7 +22,10 @@ const TeltonikaCrc = std.hash.crc.Crc(
 
 
 pub fn init() Crc {
-    return .{};
+    const crc = Crc{};
+    comptime ICrc.validation.satisfiedBy(@TypeOf(crc));
+
+    return crc;
 }
 
 pub fn deinit(_: *const Crc) void {}

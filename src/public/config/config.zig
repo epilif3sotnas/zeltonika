@@ -11,14 +11,14 @@ const ConfigIoConn = @import("io/io.zig").ConfigIoConn;
 pub const ZeltonikaConfig = struct {
 
     /// Logging configuration.
-    logging: *const ConfigLogging = &ConfigLogging{},
+    logging: ConfigLogging = .{},
 
     /// Parallelism and concurrency configuration.
-    parallel: *const ConfigParallel = &ConfigParallel{},
+    parallel: ConfigParallel = .{},
 
     /// AVL data configuration.
-    avl_data: *const ConfigAvlData = &ConfigAvlData{},
+    avl_data: ConfigAvlData = .{},
 
     /// IO connection configuration.
-    io_conn: *const ConfigIoConn = &ConfigIoConn{},
+    io_conn: ConfigIoConn = .{},
 };

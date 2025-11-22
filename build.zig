@@ -31,39 +31,56 @@ fn buildOptions(b: *std.Build) BuildOptions {
 }
 
 fn projectProperties(b: *std.Build) ProjectProperties {
+    const mod_dependencies = &[_][]const u8{
+        "interface"
+    };
+
+    const unit_tests_dependencies = mod_dependencies
+        ++ &[_][]const u8{};
+
+    const integration_tests_dependencies = mod_dependencies
+        ++ &[_][]const u8{};
+
+    const bench_dependencies = mod_dependencies
+        ++ &[_][]const u8{
+            "zbench",
+        };
+
+    const docs_dependencies = &[_][]const u8{};
+
     return .{
         .module = .{
             .name = "zeltonika",
             .root_source_file = b.path("src/zeltonika.zig"),
-            .dependencies = &[_][]const u8{},
+            .dependencies = mod_dependencies,
             .description = "Zeltonika is a library whose main goal is handling the data of the Teltonika trackers.",
         },
 
         .unit_tests = .{
             .name = "unit-tests",
             .root_source_file = b.path("src/unit_tests.zig"),
-            .dependencies = &[_][]const u8{},
+            .dependencies = unit_tests_dependencies,
             .description = "Zeltonika unit tests.",
         },
 
         .integration_tests = .{
             .name = "integration-tests",
             .root_source_file = b.path("src/integration_tests.zig"),
-            .dependencies = &[_][]const u8{},
+            .dependencies = integration_tests_dependencies,
             .description = "Zeltonika integration tests.",
         },
 
         .bench = .{
             .name = "bench-tests",
             .root_source_file = b.path("src/bench_tests.zig"),
-            .dependencies = &[_][]const u8{ "zbench" },
+            .dependencies = bench_dependencies,
             .description = "Zeltonika benchmark tests.",
         },
 
         .docs = .{
             .name = "docs",
             .root_source_file = b.path("docs/docs.zig"),
-            .dependencies = &[_][]const u8{},
+            .dependencies = docs_dependencies,
             .description = "Zeltonika documentation.",
         },
     };

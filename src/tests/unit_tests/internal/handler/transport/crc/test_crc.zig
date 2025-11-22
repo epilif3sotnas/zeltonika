@@ -7,6 +7,7 @@ const Crc = @import("../../../../../../internal/handler/transport/crc/Crc.zig").
 
 test "calculate should return a valid generated CRC16/IBM" {
     const crc = Crc.init();
+    defer crc.deinit();
 
     const data_hex = "08010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E000000000000000001";
     const data_hex_len = data_hex.len / 2;
@@ -23,6 +24,7 @@ test "calculate should return a valid generated CRC16/IBM" {
 
 test "calculate should return the algorithm initial" {
     const crc = Crc.init();
+    defer crc.deinit();
 
     const expected = 0x0000;
     const actual = crc.calculate(&[_]u8{});
@@ -32,6 +34,7 @@ test "calculate should return the algorithm initial" {
 
 test "isValid should return true for valid CRC16/IBM and valid crc value" {
     const crc = Crc.init();
+    defer crc.deinit();
 
     const data_hex = "08010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E000000000000000001";
     const data_hex_len = data_hex.len / 2;
@@ -48,6 +51,7 @@ test "isValid should return true for valid CRC16/IBM and valid crc value" {
 
 test "isValid should return false for invalid CRC16/IBM and different crc value" {
     const crc = Crc.init();
+    defer crc.deinit();
 
     const data_hex = "08010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E000000000000000001";
     const data_hex_len = data_hex.len / 2;
