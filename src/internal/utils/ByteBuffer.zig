@@ -5,7 +5,7 @@ const ArrayList = std.ArrayList;
 const Size = std.builtin.Type.Pointer.Size;
 
 
-pub const ByteBufferError = error{
+pub const ByteBufferError = error {
     PositionOutOfBounds,
     NotEnoughData,
     NotSupportedType,
@@ -66,6 +66,10 @@ pub fn position(self: *const ByteBuffer) usize {
 
 pub fn resetPosition(self: *ByteBuffer) void {
     self._pos = 0;
+}
+
+pub fn resetPositionLast(self: *ByteBuffer) void {
+    self._pos = self._array.items.len;
 }
 
 pub fn setNewPosition(self: *ByteBuffer, new_position: usize) ByteBufferError!void {
@@ -229,7 +233,9 @@ pub fn put(self: *ByteBuffer, value: anytype) ByteBuferCombinedError!void {
         },
         .pointer => |info| {
             if (info.size == Size.slice) {
-                try self.put(value);
+                for (value[0..]) |item| {
+                    try self.put(item);
+                }
                 return;
             }
 

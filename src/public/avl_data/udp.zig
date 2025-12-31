@@ -19,7 +19,7 @@ pub const UdpAvlData = struct {
     avl_data_array: AvlDataArray,
 
     /// Data containing the response to be sent back to the device.
-    response: UdpAvlResponse,
+    response: ?UdpAvlResponse = null,
 };
 
 /// UdpChannelHeader represents the data contained in
