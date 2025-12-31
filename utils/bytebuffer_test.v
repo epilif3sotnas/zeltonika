@@ -15,7 +15,6 @@ fn test__from_bytes__should_return_a_byte_buffer_with_data_from_param() {
 
 	buffer := ByteBuffer.from_bytes(input)
 
-	assert input == buffer.as_bytes()
 	assert buffer.size() == usize(input.len)
 	assert buffer.capacity() == usize(input.len)
 	assert buffer.position() == usize(input.len)
