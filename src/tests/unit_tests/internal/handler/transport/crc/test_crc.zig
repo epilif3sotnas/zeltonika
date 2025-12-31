@@ -2,7 +2,7 @@
 const std = @import("std");
 
 // internal
-const Crc = @import("../../../../../../internal/handler/transport/crc/Crc.zig").Crc;
+const Crc = @import("../../../../../../internal/handler/transport/crc/crc.zig").Crc;
 
 
 test "calculate should return a valid generated CRC16/IBM" {

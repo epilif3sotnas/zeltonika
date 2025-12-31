@@ -3,6 +3,9 @@ const std = @import("std");
 
 
 test "Root of unit tests" {
+    // Transport Module
+    _ = @import("internal/handler/transport/avl/test_transport_parser.zig");
+
     // AVL Bin Module
     _ = @import("internal/handler/transport/avl/bin/test_avl_bin_parser.zig");
 

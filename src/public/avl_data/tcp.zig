@@ -16,10 +16,10 @@ pub const TcpAvlData = struct {
     avl_data_array: AvlDataArray,
 
     /// CRC16 checksum of the data.
-    crc_16: Crc16,
+    crc_16: ?Crc16 = null,
 
     /// Data containing the response to be sent back to the device.
-    response: TcpAvlResponse,
+    response: ?TcpAvlResponse = null,
 };
 
 /// AvlDataPacketHeader represents the header of an TCP data packet.

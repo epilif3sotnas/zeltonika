@@ -1,6 +1,7 @@
 // std
 const std = @import("std");
 const testing = std.testing;
+const allocator = testing.allocator;
 
 // internal
 const ByteBuffer = @import("../../../../internal/utils/ByteBuffer.zig").ByteBuffer;
@@ -8,8 +9,6 @@ const ByteBufferError = ByteBuffer.ByteBufferError;
 
 
 test "init should return an empty byte buffer" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -20,8 +19,6 @@ test "init should return an empty byte buffer" {
 }
 
 test "initBuffer should return an byte buffer with the data received in buffer param" {
-    const allocator = std.testing.allocator;
-
     const buffer_input = "Hello, World!";
 
     var buffer = try ByteBuffer.initBuffer(allocator, buffer_input);
@@ -34,8 +31,6 @@ test "initBuffer should return an byte buffer with the data received in buffer p
 }
 
 test "initCapacity should return an empty byte buffer with a capacity of 100" {
-    const allocator = std.testing.allocator;
-
     const capacity = 100;
 
     var buffer = try ByteBuffer.initCapacity(allocator, capacity);
@@ -48,8 +43,6 @@ test "initCapacity should return an empty byte buffer with a capacity of 100" {
 }
 
 test "resetPosition should return the position of ByteBuffer as 0" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -63,9 +56,45 @@ test "resetPosition should return the position of ByteBuffer as 0" {
     try testing.expectEqual(expected, actual);
 }
 
-test "setNewPosition should return change the ByteBuffer to new position" {
-    const allocator = std.testing.allocator;
+test "ByteBuffer.resetPositionLast - should go to the last position plus 1" {
+    var buffer = ByteBuffer.init(allocator);
+    defer buffer.deinit();
 
+    const input_write = &[_]u8 { 0x01, 0x02, 0x03 };
+    try buffer.put(input_write);
+    try buffer.setNewPosition(1);
+
+    const pos_before_reset = buffer.position();
+    buffer.resetPositionLast();
+
+    const expected = 3;
+    const actual = buffer.position();
+
+    try testing.expect(pos_before_reset != expected);
+    try testing.expectEqual(expected, actual);
+}
+
+test "ByteBuffer.resetPositionLast - should same at the same position" {
+    var buffer = ByteBuffer.init(allocator);
+    defer buffer.deinit();
+
+    buffer.resetPositionLast();
+
+    const expected_empty = 0;
+    const actual_empty = buffer.position();
+
+    try testing.expectEqual(expected_empty, actual_empty);
+
+    const input_write = &[_]u8 { 0x01, 0x02, 0x03 };
+    try buffer.put(input_write);
+
+    const expected_not_empty = 3;
+    const actual_not_empty = buffer.position();
+
+    try testing.expectEqual(expected_not_empty, actual_not_empty);
+}
+
+test "setNewPosition should return change the ByteBuffer to new position" {
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -80,8 +109,6 @@ test "setNewPosition should return change the ByteBuffer to new position" {
 }
 
 test "setNewPosition should return an error of out of bounds" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -95,8 +122,6 @@ test "setNewPosition should return an error of out of bounds" {
 }
 
 test "setReadOnly should return an read only ByteBuffer" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -109,8 +134,6 @@ test "setReadOnly should return an read only ByteBuffer" {
 }
 
 test "array should return the byte buffer's array" {
-    const allocator = std.testing.allocator;
-
     var buffer = try ByteBuffer.initCapacity(allocator, 3);
     defer buffer.deinit();
 
@@ -128,8 +151,6 @@ test "array should return the byte buffer's array" {
 }
 
 test "arrayFromPosition should return the byte buffer's array subset" {
-    const allocator = std.testing.allocator;
-
     var buffer = try ByteBuffer.initCapacity(allocator, 3);
     defer buffer.deinit();
 
@@ -144,8 +165,6 @@ test "arrayFromPosition should return the byte buffer's array subset" {
 }
 
 test "arrayToPosition should return the byte buffer's array subset" {
-    const allocator = std.testing.allocator;
-
     var buffer = try ByteBuffer.initCapacity(allocator, 3);
     defer buffer.deinit();
 
@@ -160,8 +179,6 @@ test "arrayToPosition should return the byte buffer's array subset" {
 }
 
 test "get should return the data without any error" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -212,8 +229,6 @@ const TestStruct = struct {
 };
 
 test "get should return a struct without any error" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -240,8 +255,6 @@ const TestStruct_2 = struct {
 };
 
 test "get should return a struct inside struct without any error" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -266,8 +279,6 @@ test "get should return a struct inside struct without any error" {
 }
 
 test "get should return a NotEnoughData error when the buffer does not have enough data to read T" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -282,8 +293,6 @@ test "get should return a NotEnoughData error when the buffer does not have enou
 }
 
 test "get should return an InvalidIntegerType error when the T type is not power of 2 bytes (integers)" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -298,8 +307,6 @@ test "get should return an InvalidIntegerType error when the T type is not power
 }
 
 test "get should return an ByteNotSupported error when the byte is not 0 or 1 on bool read" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -314,8 +321,6 @@ test "get should return an ByteNotSupported error when the byte is not 0 or 1 on
 }
 
 test "get should return an NotSupportedType error when the type is not supported" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -338,8 +343,6 @@ const TestStructPut = struct {
 };
 
 test "put should add bytes to the ByteBuffer without any error" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -372,8 +375,6 @@ const TestStructPut_2 = struct {
 };
 
 test "put should add bytes with nested structs to the ByteBuffer without error" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -405,8 +406,6 @@ test "put should add bytes with nested structs to the ByteBuffer without error" 
 }
 
 test "put should return an ReadOnlyBuffer error when the the buffer is set as read only" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
     buffer.setReadOnly();
@@ -420,8 +419,6 @@ test "put should return an ReadOnlyBuffer error when the the buffer is set as re
 }
 
 test "put should return an InvalidIntegerType error when the T type is not power of 2 bytes (integers)" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 
@@ -434,8 +431,6 @@ test "put should return an InvalidIntegerType error when the T type is not power
 }
 
 test "put should return an notsupportedtype error when the type is not supported" {
-    const allocator = std.testing.allocator;
-
     var buffer = ByteBuffer.init(allocator);
     defer buffer.deinit();
 

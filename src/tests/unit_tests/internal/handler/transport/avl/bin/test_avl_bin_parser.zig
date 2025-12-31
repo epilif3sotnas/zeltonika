@@ -1,27 +1,23 @@
 // std
 const std = @import("std");
+const allocator = std.testing.allocator;
 
 // internal
 const CodecId = @import("../../../../../../../public/avl_data/avl_data_array.zig").CodecId;
 const ByteBuffer = @import("../../../../../../../internal/utils/ByteBuffer.zig");
-const AvlBinParser = @import("../../../../../../../internal/handler/transport/avl/bin/AvlBinParser.zig").AvlBinParser;
+const AvlBinParser = @import("../../../../../../../internal/handler/transport/avl/bin/avl_bin_parser.zig").AvlBinParser;
+const AvlBinParserWithType = @import("../../../../../../../internal/handler/transport/avl/bin/avl_bin_parser.zig").AvlBinParserWithType;
 const IAvlIoElementParser = @import("../../../../../../../internal/handler/transport/avl/io/avl_io_element_parser.zig").IAvlIoElementParser;
 const HelperNoOpAvlIoElementParser = @import("../../../../../../helpers/internal/handler/transport/avl/io/HelperNoOpAvlIoElementParser.zig");
 const HelperAvlData = @import("../../../../../../helpers/internal/handler/transport/avl/bin/helper_avl_data.zig");
 
-
 test "AvlBinParser.init - smoke test" {
-    const avl_bin_parser = AvlBinParser.init();
+    const avl_bin_parser = try AvlBinParser().init(allocator);
     defer avl_bin_parser.deinit();
 }
 
 test "AvlBinParser.encodeBin - should write to the buffer AVL Data" {
-    const allocator = std.testing.allocator;
-
-    var avl_io_element_parser = HelperNoOpAvlIoElementParser.init();
-    defer avl_io_element_parser.deinit();
-
-    const avl_bin_parser = AvlBinParser.initTest(IAvlIoElementParser.from(&avl_io_element_parser));
+    const avl_bin_parser = try AvlBinParserWithType(HelperNoOpAvlIoElementParser).init(allocator);
     defer avl_bin_parser.deinit();
 
     var buffer = ByteBuffer.init(allocator);
@@ -38,12 +34,7 @@ test "AvlBinParser.encodeBin - should write to the buffer AVL Data" {
 }
 
 test "AvlBinParser.decodeBin - should read from buffer the AVL Data" {
-    const allocator = std.testing.allocator;
-
-    var avl_io_element_parser = HelperNoOpAvlIoElementParser.init();
-    defer avl_io_element_parser.deinit();
-
-    const avl_bin_parser = AvlBinParser.initTest(IAvlIoElementParser.from(&avl_io_element_parser));
+    const avl_bin_parser = try AvlBinParserWithType(HelperNoOpAvlIoElementParser).init(allocator);
     defer avl_bin_parser.deinit();
 
     var buffer = ByteBuffer.init(allocator);

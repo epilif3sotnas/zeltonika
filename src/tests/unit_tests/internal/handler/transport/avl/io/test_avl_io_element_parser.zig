@@ -2,7 +2,7 @@
 const std = @import("std");
 
 // internal
-const AvlIoElementParser = @import("../../../../../../../internal/handler/transport/avl/io/AvlIoElementParser.zig").AvlIoElementParser;
+const AvlIoElementParser = @import("../../../../../../../internal/handler/transport/avl/io/avl_io_element_parser.zig").AvlIoElementParser;
 const ByteBuffer = @import("../../../../../../../internal/utils/ByteBuffer.zig").ByteBuffer;
 const AvlIoElement = @import("../../../../../../../public/avl_data/avl_data_array.zig").AvlIoElement;
 const CodecId = @import("../../../../../../../public/avl_data/avl_data_array.zig").CodecId;
