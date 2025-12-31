@@ -160,15 +160,15 @@ fn test__from_position__should_return_subset() {
 
 fn test__to_position__should_return_subset() {
   input := [u8(0x01), 0x02, 0x03, 0x04]
-	mut buffer := ByteBuffer.from_bytes(input)
+  mut buffer := ByteBuffer.from_bytes(input)
 
-	buffer.set_new_position(2)!
+  buffer.set_new_position(2)!
 
-	expected := [u8(0x01), 0x02, 0x03]
-	actual := buffer.to_position()
+  expected := [u8(0x01), 0x02, 0x03]
+  actual := buffer.to_position()
 
-	assert expected.len == actual.len
-	assert expected == actual
+  assert expected.len == actual.len
+  assert expected == actual
 }
 
 @[packed]
