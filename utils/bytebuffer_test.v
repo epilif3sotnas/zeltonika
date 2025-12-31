@@ -35,19 +35,19 @@ fn test__with_capacity__should_return_empty_byte_buffer_with_capacity_100() {
 fn test__clear__should_clear_the_data_that_was_on_the_buffer() {
   input := 'Hello, World!'.bytes()
 
-	mut buffer := ByteBuffer.from_bytes(input)
+  mut buffer := ByteBuffer.from_bytes(input)
 
-	assert buffer.size() == usize(input.len)
-	assert buffer.capacity() == usize(input.len)
-	assert buffer.position() == usize(input.len)
-	assert buffer.is_read_only() == false
+  assert buffer.size() == usize(input.len)
+  assert buffer.capacity() == usize(input.len)
+  assert buffer.position() == usize(input.len)
+  assert buffer.is_read_only() == false
 
-	buffer.clear()
+  buffer.clear()
 
-	assert buffer.size() == 0
-	assert buffer.capacity() == usize(input.len)
-	assert buffer.position() == 0
-	assert buffer.is_read_only() == false
+  assert buffer.size() == 0
+  assert buffer.capacity() == usize(input.len)
+  assert buffer.position() == 0
+  assert buffer.is_read_only() == false
 }
 
 fn test__reset_position__should_return_position_zero() {
