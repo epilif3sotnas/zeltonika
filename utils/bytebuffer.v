@@ -59,7 +59,7 @@ pub fn (mut bb ByteBuffer) reset_position_last() {
 }
 
 pub fn (mut bb ByteBuffer) set_new_position(new_pos usize) ! {
-	if new_pos >= bb.data.len {
+	if new_pos = bb.data.len {
 		return ByteBufferError.new(.position_out_of_bounds)
 	}
 
@@ -169,9 +169,7 @@ fn (bb &ByteBuffer) size_of[T]() !usize {
     return ByteBufferError.new(.not_supported_type)
   }
 
-  size += usize(sizeof(T))
-
-  return size
+  return usize(sizeof(T))
 }
 
 pub fn (bb &ByteBuffer) print_debug() {

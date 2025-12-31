@@ -15,6 +15,7 @@ fn test__from_bytes__should_return_a_byte_buffer_with_data_from_param() {
 
 	buffer := ByteBuffer.from_bytes(input)
 
+    assert input == buffer.as_bytes()
 	assert buffer.size() == usize(input.len)
 	assert buffer.capacity() == usize(input.len)
 	assert buffer.position() == usize(input.len)
@@ -99,8 +100,8 @@ fn test__reset_position_last__should_stay_zero_when_empty_then_go_to_last() {
 fn test__set_new_position__should_change_position() {
 	mut buffer := ByteBuffer.new()
 
-	input_write := [u8(0x01), 0x02, 0x03]!
-	buffer.put(input_write)!
+	input := [u8(0x01), 0x02, 0x03]!
+	buffer.put(input)!
 
 	new_position := usize(1)
 	buffer.set_new_position(new_position)!
@@ -111,8 +112,8 @@ fn test__set_new_position__should_change_position() {
 fn test__set_new_position__should_return_out_of_bounds_error() {
 	mut buffer := ByteBuffer.new()
 
-	input_write := [u8(0x01), 0x02, 0x03]!
-	buffer.put(input_write)!
+	input := [u8(0x01), 0x02, 0x03]!
+	buffer.put(input)!
 
 	buffer.set_new_position(10) or {
 		assert err is ByteBufferError
@@ -283,8 +284,8 @@ fn test__get__should_return_nested_struct_without_error() {
 fn test__get__should_return_not_enough_data_error() {
 	mut buffer := ByteBuffer.new()
 
-	small := [u8(0x01), 0x02]!
-	buffer.put(small)!
+	input := [u8(0x01), 0x02]!
+	buffer.put(input)!
 	buffer.reset_position()
 
 	buffer.get[TestStruct]() or {
