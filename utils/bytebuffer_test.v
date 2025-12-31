@@ -15,6 +15,7 @@ fn test__from_bytes__should_return_a_byte_buffer_with_data_from_param() {
 
 	buffer := ByteBuffer.from_bytes(input)
 
+	assert input == buffer.as_bytes()
 	assert buffer.size() == usize(input.len)
 	assert buffer.capacity() == usize(input.len)
 	assert buffer.position() == usize(input.len)
@@ -24,12 +25,12 @@ fn test__from_bytes__should_return_a_byte_buffer_with_data_from_param() {
 fn test__with_capacity__should_return_empty_byte_buffer_with_capacity_100() {
   capacity := usize(100)
 
-	buffer := ByteBuffer.with_capacity(capacity)
+  buffer := ByteBuffer.with_capacity(capacity)
 
-	assert buffer.size() == 0
-	assert buffer.capacity() == capacity
-	assert buffer.position() == 0
-	assert buffer.is_read_only() == false
+  assert buffer.size() == 0
+  assert buffer.capacity() == capacity
+  assert buffer.position() == 0
+  assert buffer.is_read_only() == false
 }
 
 fn test__clear__should_clear_the_data_that_was_on_the_buffer() {
