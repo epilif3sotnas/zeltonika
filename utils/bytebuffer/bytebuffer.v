@@ -1,4 +1,4 @@
-module utils
+module bytebuffer
 
 
 // std
@@ -163,8 +163,6 @@ pub fn (mut bb ByteBuffer) put[T](value T) ! {
 // can occur mainly when unsupported types are inside
 // supported.
 fn (bb &ByteBuffer) size_of[T]() !usize {
-  mut size := usize(0)
-
   $if T is $string || T is $map || T is $array_dynamic {
     return ByteBufferError.new(.not_supported_type)
   }

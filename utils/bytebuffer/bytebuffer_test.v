@@ -1,4 +1,4 @@
-module utils
+module bytebuffer
 
 
 fn test__new__should_return_an_empty_byte_buffer() {
