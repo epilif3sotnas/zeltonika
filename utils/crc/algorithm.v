@@ -11,10 +11,10 @@ pub struct Algorithm[T] {
 
 pub fn Algorithm.new[T](
   polynomial T,
-	initial T,
-	reflect_input bool,
-	reflect_output bool,
-	xor_output T,
+  initial T,
+  reflect_input bool,
+  reflect_output bool,
+  xor_output T,
 ) Algorithm[T] {
   return Algorithm[T] {
     polynomial: polynomial,
