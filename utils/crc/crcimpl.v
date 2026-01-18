@@ -10,54 +10,22 @@ import math.bits as bits_utils
 pub struct Crc[T] {
   algorithm   Algorithm[T]
   bits u32 = sizeof(T) * 8
+  table       [256]u64
 mut:
   crc_value    u64
-  table       [256]u64
 }
 
 pub fn Crc.new[T](algorithm Algorithm[T]) Crc[T] {
-  mut crc := Crc[T]{ algorithm: algorithm }
-  crc.init_lookup_table()
+  lookup_table := init_lookup_table[T](algorithm)
+  mut crc := Crc[T]{ algorithm: algorithm, table: lookup_table }
   return crc
 }
 
 pub fn (mut self Crc[T]) init() {
   self.crc_value = if self.algorithm.reflect_input {
-      self.bit_reverse(u64(self.algorithm.initial))
+      bit_reverse[T](u64(self.algorithm.initial))
   } else {
       u64(self.algorithm.initial)
-  }
-}
-
-fn (mut self Crc[T]) init_lookup_table() {
-  poly := if self.algorithm.reflect_input {
-    self.bit_reverse(u64(self.algorithm.polynomial))
-  } else {
-    u64(self.algorithm.polynomial)
-  }
-
-  for i in 0 .. 256 {
-    mut crc := u64(i)
-
-    if self.algorithm.reflect_input {
-      for _ in 0 .. 8 {
-          if crc & 1 != 0 {
-              crc = ((crc >> 1) ^ poly)
-          } else {
-              crc = (crc >> 1)
-          }
-      }
-    } else {
-      crc <<= u64(self.bits - 8)
-      for _ in 0 .. 8 {
-        if crc & (u64(1) << u64(self.bits - 1)) != 0 {
-            crc = ((crc << 1) ^ poly)
-        } else {
-            crc = (crc << 1)
-        }
-      }
-    }
-    self.table[i] = crc
   }
 }
 
@@ -81,7 +49,7 @@ pub fn (self Crc[T]) final() T {
   mut result := self.crc_value
 
   if self.algorithm.reflect_input != self.algorithm.reflect_output {
-    result = self.bit_reverse(result)
+    result = bit_reverse[T](result)
   }
 
   return T(result ^ u64(self.algorithm.xor_output))
@@ -93,7 +61,44 @@ pub fn (mut self Crc[T]) hash(data []u8) T {
   return self.final()
 }
 
-fn (self &Crc[T]) bit_reverse(x u64) u64 {
+fn init_lookup_table[T](algorithm Algorithm[T]) [256]u64 {
+  mut lookup_table := [256]u64{}
+  bits := sizeof(T) * 8
+
+  poly := if algorithm.reflect_input {
+    bit_reverse[T](u64(algorithm.polynomial))
+  } else {
+    u64(algorithm.polynomial)
+  }
+
+  for i in 0 .. 256 {
+    mut crc := u64(i)
+
+    if algorithm.reflect_input {
+      for _ in 0 .. 8 {
+          if crc & 1 != 0 {
+              crc = ((crc >> 1) ^ poly)
+          } else {
+              crc = (crc >> 1)
+          }
+      }
+    } else {
+      crc <<= u64(bits - 8)
+      for _ in 0 .. 8 {
+        if crc & (u64(1) << u64(bits - 1)) != 0 {
+            crc = ((crc << 1) ^ poly)
+        } else {
+            crc = (crc << 1)
+        }
+      }
+    }
+    lookup_table[i] = crc
+  }
+
+  return lookup_table
+}
+
+fn bit_reverse[T](x u64) u64 {
   mut res := u64(0)
 
   $if T is u8 {
