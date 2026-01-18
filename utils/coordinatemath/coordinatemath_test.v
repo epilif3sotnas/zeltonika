@@ -1,4 +1,4 @@
-module utils
+module coordinatemath
 
 
 fn test__convert_coordinate_to_teltonika_format__should_return_valid_teltonika_coordinate_format() {

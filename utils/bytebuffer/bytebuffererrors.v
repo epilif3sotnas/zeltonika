@@ -1,4 +1,4 @@
-module utils
+module bytebuffer
 
 
 pub enum ByteBufferTypeError {
