@@ -89,8 +89,8 @@ pub fn (self Crc[T]) final() T {
 
 pub fn (mut self Crc[T]) hash(data []u8) T {
   self.init()
-	self.update(data)
-	return self.final()
+  self.update(data)
+  return self.final()
 }
 
 fn (self &Crc[T]) bit_reverse(x u64) u64 {
