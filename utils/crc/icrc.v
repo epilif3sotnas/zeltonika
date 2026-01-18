@@ -1,7 +1,7 @@
 module crc
 
 
-interface ICrc[T] {
+pub interface ICrc[T] {
   final() T
 mut:
   update([]u8)
