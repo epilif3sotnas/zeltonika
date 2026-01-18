@@ -45,7 +45,7 @@ pub fn (mut self Crc[T]) update(data []u8) {
 	}
 }
 
-pub fn (self Crc[T]) final() T {
+pub fn (self &Crc[T]) final() T {
   mut result := self.crc_value
 
   if self.algorithm.reflect_input != self.algorithm.reflect_output {
