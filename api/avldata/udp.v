@@ -19,7 +19,7 @@ pub:
 	avl_data_array     AvlDataArray
 
 	// response contains the response to be sent back to the device.
-	response ?UdpAvlResponse = none
+	response ?UdpAvlResponse
 }
 
 // UdpChannelHeader represents the data contained in
