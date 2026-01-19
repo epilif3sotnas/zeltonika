@@ -13,7 +13,7 @@ pub:
 }
 
 // ConfigUdpClient Configuration options for the client.
-struct ConfigUdpClient {}
+pub struct ConfigUdpClient {}
 
 // ConfigUdpServer Configuration options for the server.
-struct ConfigUdpServer {}
+pub struct ConfigUdpServer {}
