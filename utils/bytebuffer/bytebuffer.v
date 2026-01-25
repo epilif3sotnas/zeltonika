@@ -150,8 +150,8 @@ pub fn (mut bb ByteBuffer) put[T](value T) ! {
 	  bytes = value.bytes()
 	} $else $if T is $array_dynamic {
     for element in value {
-  		bytes << binary.encode_binary(element, bb.encoding_config)!
-  	}
+      bytes << binary.encode_binary(element, bb.encoding_config)!
+    }
 	} $else {
 	  bytes = binary.encode_binary(value, bb.encoding_config)!
 	}
