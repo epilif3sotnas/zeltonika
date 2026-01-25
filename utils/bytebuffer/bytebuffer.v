@@ -139,19 +139,24 @@ pub fn (mut bb ByteBuffer) put[T](value T) ! {
 		return ByteBufferError.new(.read_only_buffer)
 	}
 
-  $if T is $string || T is $map || T is $array_dynamic {
+  $if T is $map {
     return ByteBufferError.new(.not_supported_type)
 	}
 
 	mut bytes := []u8{}
 	$if T is $array_fixed {
 		bytes = value[..].clone()
+	} $else $if T is $string {
+	  bytes = value.bytes()
+	} $else $if T is $array_dynamic {
+	  for element in value {
+			bytes << binary.encode_binary(element, bb.encoding_config)!
+		}
 	} $else {
 	  bytes = binary.encode_binary(value, bb.encoding_config)!
 	}
-
 	bb.data.insert(int(bb.pos), bytes)
-	bb.pos += bb.size_of[T]()!
+	bb.pos += usize(bytes.len)
 }
 
 // This function only supports primitive types,
