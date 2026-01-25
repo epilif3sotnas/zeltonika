@@ -9,9 +9,9 @@ import parser.transport.avl.io.models { AvlIoCodec8, AvlIoCodec8e, AvlIoCodec16 
 
 
 enum AvlIoType {
-	codec8
-	codec8e
-	codec16
+  codec8
+  codec8e
+  codec16
 }
 
 enum AvlIoElementBytes {
@@ -107,10 +107,10 @@ fn (_ &AvlIoElementParser) encode_n_io_elements[N, K](
 	  buffer.put(K(k))!
 
 		match avl_io_element {
-  	  .element1 { buffer.put(utils_arrays.array_to_fixed_1[u8](v))! }
-  	  .element2 { buffer.put(utils_arrays.array_to_fixed_2[u8](v))! }
-  	  .element4 { buffer.put(utils_arrays.array_to_fixed_4[u8](v))! }
-  	  .element8 { buffer.put(utils_arrays.array_to_fixed_8[u8](v))! }
+   	  .element1 { buffer.put(utils_arrays.array_to_fixed_1[u8](v))! }
+   	  .element2 { buffer.put(utils_arrays.array_to_fixed_2[u8](v))! }
+   	  .element4 { buffer.put(utils_arrays.array_to_fixed_4[u8](v))! }
+   	  .element8 { buffer.put(utils_arrays.array_to_fixed_8[u8](v))! }
       .elementn {
         buffer.put(u16(v.len))!
         buffer.put(v)!
@@ -128,13 +128,13 @@ fn (self &AvlIoElementParser) decode(
 	return match codec_id {
   	.codec8 {
   	  AvlIoElement {
-  			codec_id: codec_id
-  			event_io_id: (io_element_common as AvlIoCodec8).event_io_id
-  			number_of_total_io: (io_element_common as AvlIoCodec8).number_of_total_io
-  			n1_elements: self.decode_n_io_element(mut buffer, 1, false, true, true)!
-  			n2_elements: self.decode_n_io_element(mut buffer, 2, false, true, true)!
-  			n4_elements: self.decode_n_io_element(mut buffer, 4, false, true, true)!
-  			n8_elements: self.decode_n_io_element(mut buffer, 8, false, true, true)!
+   			codec_id: codec_id
+   			event_io_id: (io_element_common as AvlIoCodec8).event_io_id
+   			number_of_total_io: (io_element_common as AvlIoCodec8).number_of_total_io
+   			n1_elements: self.decode_n_io_element(mut buffer, 1, false, true, true)!
+   			n2_elements: self.decode_n_io_element(mut buffer, 2, false, true, true)!
+   			n4_elements: self.decode_n_io_element(mut buffer, 4, false, true, true)!
+   			n8_elements: self.decode_n_io_element(mut buffer, 8, false, true, true)!
   		}
   	}
   	.codec8e {
@@ -205,11 +205,11 @@ fn (_ &AvlIoElementParser) decode_n_io_element(
 		if dynamic {
 		  length := buffer.get[u16]()!
 
-			for _ in 0 .. length {
-			  bytes << buffer.get[u8]()!
-			}
+ 			for _ in 0 .. length {
+ 			  bytes << buffer.get[u8]()!
+ 			}
 
-			n_io_elements[u16(key)] = bytes
+ 			n_io_elements[u16(key)] = bytes
 		} else {
   		for _ in 0 .. size {
   		  bytes << buffer.get[u8]()!

@@ -12,48 +12,48 @@ fn test_avl_io_element_parser_init() {
 }
 
 fn test__encode__should_write_to_the_byte_buffer_a_valid_codec_8_byte_array() {
-    avl_io_element_parser := AvlIoElementParser.new()
+  avl_io_element_parser := AvlIoElementParser.new()
 
-    mut buffer := ByteBuffer.new()
+  mut buffer := ByteBuffer.new()
 
-    input := helpers_avl_io.avl_io_element_codec_8()
+  input := helpers_avl_io.avl_io_element_codec_8()
 
-    avl_io_element_parser.encode(input, mut buffer)!
+  avl_io_element_parser.encode(input, mut buffer)!
 
-    actual := buffer.as_bytes()
-    expected := helpers_avl_io.byte_array_codec_8
+  actual := buffer.as_bytes()
+  expected := helpers_avl_io.byte_array_codec_8
 
-    assert expected == actual
+  assert expected == actual
 }
 
 fn test__encode__should_write_to_the_byte_buffer_a_valid_codec_8e_byte_array() {
-    avl_io_element_parser := AvlIoElementParser.new()
+  avl_io_element_parser := AvlIoElementParser.new()
 
-    mut buffer := ByteBuffer.new()
+  mut buffer := ByteBuffer.new()
 
-    input := helpers_avl_io.avl_io_element_codec_8e()
+  input := helpers_avl_io.avl_io_element_codec_8e()
 
-    avl_io_element_parser.encode(input, mut buffer)!
+  avl_io_element_parser.encode(input, mut buffer)!
 
-    actual := buffer.as_bytes()
-    expected := helpers_avl_io.byte_array_codec_8e
+  actual := buffer.as_bytes()
+  expected := helpers_avl_io.byte_array_codec_8e
 
-    assert expected == actual
+  assert expected == actual
 }
 
 fn test__encode__should_write_to_the_byte_buffer_a_valid_codec_16_byte_array() {
-    avl_io_element_parser := AvlIoElementParser.new()
+  avl_io_element_parser := AvlIoElementParser.new()
 
-    mut buffer := ByteBuffer.new()
+  mut buffer := ByteBuffer.new()
 
-    input := helpers_avl_io.avl_io_element_codec_16()
+  input := helpers_avl_io.avl_io_element_codec_16()
 
-    avl_io_element_parser.encode(input, mut buffer)!
+  avl_io_element_parser.encode(input, mut buffer)!
 
-    actual := buffer.as_bytes()
-    expected := helpers_avl_io.byte_array_codec_16
+  actual := buffer.as_bytes()
+  expected := helpers_avl_io.byte_array_codec_16
 
-    assert expected == actual
+  assert expected == actual
 }
 
 fn test__decode__should_read_from_byte_buffer_a_valid_codec_8_byte_array() {
