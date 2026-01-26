@@ -123,11 +123,11 @@ fn (self &AvlIoElementParser) decode(
 	mut buffer ByteBuffer,
 	codec_id CodecId,
 ) !AvlIoElement {
-	io_element_common := self.decode_io_element_common(mut buffer, codec_id)!
+  io_element_common := self.decode_io_element_common(mut buffer, codec_id)!
 
-	return match codec_id {
-  	.codec8 {
-  	  AvlIoElement {
+  return match codec_id {
+   	.codec8 {
+   	  AvlIoElement {
    			codec_id: codec_id
    			event_io_id: (io_element_common as AvlIoCodec8).event_io_id
    			number_of_total_io: (io_element_common as AvlIoCodec8).number_of_total_io
@@ -136,8 +136,8 @@ fn (self &AvlIoElementParser) decode(
    			n4_elements: self.decode_n_io_element(mut buffer, 4, false, true, true)!
    			n8_elements: self.decode_n_io_element(mut buffer, 8, false, true, true)!
   		}
-  	}
-  	.codec8e {
+   	}
+   	.codec8e {
      	AvlIoElement {
     		codec_id: codec_id
     		event_io_id: (io_element_common as AvlIoCodec8e).event_io_id
@@ -148,8 +148,8 @@ fn (self &AvlIoElementParser) decode(
     		n8_elements: self.decode_n_io_element(mut buffer, 8, false, false, false)!
     		nx_elements: self.decode_n_io_element(mut buffer, 0, true, false, false)!
      	}
-  	}
-  	.codec16 {
+   	}
+   	.codec16 {
      	AvlIoElement {
     		codec_id: codec_id
     		event_io_id: (io_element_common as AvlIoCodec16).event_io_id
@@ -160,19 +160,19 @@ fn (self &AvlIoElementParser) decode(
     		n4_elements: self.decode_n_io_element(mut buffer, 4, false, true, false)!
     		n8_elements: self.decode_n_io_element(mut buffer, 8, false, true, false)!
      	}
-  	}
-	}
+   	}
+  }
 }
 
 fn (_ &AvlIoElementParser) decode_io_element_common(
 	mut buffer ByteBuffer,
 	codec_id CodecId,
 ) !AvlIo {
-	return match codec_id {
-		.codec8     { AvlIo(buffer.get[AvlIoCodec8]()!) }
-		.codec8e    { AvlIo(buffer.get[AvlIoCodec8e]()!) }
-		.codec16    { AvlIo(buffer.get[AvlIoCodec16]()!) }
-	}
+  return match codec_id {
+  	.codec8     { AvlIo(buffer.get[AvlIoCodec8]()!) }
+  	.codec8e    { AvlIo(buffer.get[AvlIoCodec8e]()!) }
+  	.codec16    { AvlIo(buffer.get[AvlIoCodec16]()!) }
+  }
 }
 
 fn (_ &AvlIoElementParser) decode_n_io_element(
@@ -183,41 +183,41 @@ fn (_ &AvlIoElementParser) decode_n_io_element(
 	is_k_u8 bool,
 ) !map[u16][]u8 {
   mut n_io_elements := map[u16][]u8{}
-	n_elements := if is_n_u8 {
-	  usize(buffer.get[u8]()!)
-	} else {
-	  usize(buffer.get[u16]()!)
-	}
+  n_elements := if is_n_u8 {
+    usize(buffer.get[u8]()!)
+  } else {
+    usize(buffer.get[u16]()!)
+  }
 
-	if n_elements == 0 {
-		return n_io_elements
-	}
+  if n_elements == 0 {
+  	return n_io_elements
+  }
 
-	for _ in 0 .. n_elements {
-		key := if is_k_u8 {
-		  u16(buffer.get[u8]()!)
-		} else {
-		  buffer.get[u16]()!
-		}
+  for _ in 0 .. n_elements {
+  	key := if is_k_u8 {
+  	  u16(buffer.get[u8]()!)
+  	} else {
+  	  buffer.get[u16]()!
+  	}
 
-		mut bytes := []u8{}
+  	mut bytes := []u8{}
 
-		if dynamic {
-		  length := buffer.get[u16]()!
+  	if dynamic {
+  	  length := buffer.get[u16]()!
 
- 			for _ in 0 .. length {
- 			  bytes << buffer.get[u8]()!
- 			}
+  		for _ in 0 .. length {
+  		  bytes << buffer.get[u8]()!
+  		}
 
- 			n_io_elements[u16(key)] = bytes
-		} else {
+  		n_io_elements[u16(key)] = bytes
+  	} else {
   		for _ in 0 .. size {
   		  bytes << buffer.get[u8]()!
   		}
-		}
+  	}
 
-		n_io_elements[key] = bytes
-	}
+  	n_io_elements[key] = bytes
+  }
 
-	return n_io_elements
+  return n_io_elements
 }
