@@ -113,16 +113,16 @@ pub:
 
 pub mut:
 	// n1_elements represents I/O elements with 1-byte values.
-	n1_elements map[u16][1]u8
+	n1_elements map[u16][]u8
 
 	// n2_elements represents I/O elements with 2-byte values.
-	n2_elements map[u16][2]u8
+	n2_elements map[u16][]u8
 
 	// n4_elements represents I/O elements with 4-byte values.
-	n4_elements map[u16][4]u8
+	n4_elements map[u16][]u8
 
 	// n8_elements represents I/O elements with 8-byte values.
-	n8_elements map[u16][8]u8
+	n8_elements map[u16][]u8
 
 	// nx_elements represents I/O elements with variable-length values.
 	nx_elements map[u16][]u8
