@@ -8,12 +8,6 @@ import utils.arrays as utils_arrays
 import parser.transport.avl.io.models { AvlIoCodec8, AvlIoCodec8e, AvlIoCodec16 }
 
 
-enum AvlIoType {
-  codec8
-  codec8e
-  codec16
-}
-
 enum AvlIoElementBytes {
   element1
   element2
