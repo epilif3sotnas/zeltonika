@@ -97,11 +97,11 @@ fn (_ &AvlIoElementParser) encode_n_io_elements[N, K](
   mut buffer ByteBuffer,
   avl_io_element AvlIoElementBytes
 ) ! {
-	buffer.put(N(avl_n_element.len))!
+  buffer.put(N(avl_n_element.len))!
 
-	if avl_n_element.len == 0 {
-	  return
-	}
+  if avl_n_element.len == 0 {
+    return
+  }
 
   for k, v in avl_n_element {
     buffer.put(K(k))!
