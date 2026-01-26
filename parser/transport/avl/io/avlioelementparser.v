@@ -106,7 +106,7 @@ fn (_ &AvlIoElementParser) encode_n_io_elements[N, K](
 	for k, v in avl_n_element {
 	  buffer.put(K(k))!
 
-		match avl_io_element {
+  	match avl_io_element {
    	  .element1 { buffer.put(utils_arrays.array_to_fixed_1[u8](v))! }
    	  .element2 { buffer.put(utils_arrays.array_to_fixed_2[u8](v))! }
    	  .element4 { buffer.put(utils_arrays.array_to_fixed_4[u8](v))! }
