@@ -13,17 +13,17 @@ pub const byte_array := [
 ]
 
 pub fn avl_data() AvlData {
-	return AvlData {
-	  timestamp: 0x0000016B40D8EA30
-		priority: .high
-		gps_element: GpsElement {
+  return AvlData {
+    timestamp: 0x0000016B40D8EA30
+  	priority: .high
+  	gps_element: GpsElement {
      	longitude: -0.1275
       latitude: 51.50722
       altitude: 765
       angle: 132
       satellites: 2
       speed: 125
-		}
-		io_element: AvlIoElement{}
-	}
+  	}
+  	io_element: AvlIoElement{}
+  }
 }
