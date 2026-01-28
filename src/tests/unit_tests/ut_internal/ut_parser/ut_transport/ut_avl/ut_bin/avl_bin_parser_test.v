@@ -27,7 +27,7 @@ fn test__encode__should_write_to_the_buffer_avl_data() {
   assert expected == actual
 }
 
-fn test__decode__should_write_to_the_buffer_avl_data() {
+fn test__decode__should_read_the_buffer_avl_data_and_parse_to_avl_data() {
   avl_bin_parser := AvlBinParser.new_test(no_avl_io_element_parser)
 
   data_to_decode := helpers_avl_bin.byte_array
