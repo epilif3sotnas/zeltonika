@@ -9,11 +9,15 @@ import tests.helpers.h_internal.h_parser.h_transport.h_avl.h_bin as helpers_avl_
 import tests.helpers.h_internal.h_parser.h_transport.h_avl.h_io as helpers_avl_io
 
 
-const no_avl_io_element_parser := helpers_avl_io.NoAvlIoElementParser.new()
+const no_op_avl_io_element_parser := helpers_avl_io.NoOpAvlIoElementParser.new()
 
+
+fn test__new__should_init() {
+  avl_bin := AvlBinParser.new()
+}
 
 fn test__encode__should_write_to_the_buffer_avl_data() {
-  avl_bin_parser := AvlBinParser.new_test(no_avl_io_element_parser)
+  avl_bin_parser := AvlBinParser.new_test(no_op_avl_io_element_parser)
 
   mut buffer := ByteBuffer.new()
 
@@ -28,7 +32,7 @@ fn test__encode__should_write_to_the_buffer_avl_data() {
 }
 
 fn test__decode__should_read_the_buffer_avl_data_and_parse_to_avl_data() {
-  avl_bin_parser := AvlBinParser.new_test(no_avl_io_element_parser)
+  avl_bin_parser := AvlBinParser.new_test(no_op_avl_io_element_parser)
 
   data_to_decode := helpers_avl_bin.byte_array
   mut buffer := ByteBuffer.from_bytes(data_to_decode)

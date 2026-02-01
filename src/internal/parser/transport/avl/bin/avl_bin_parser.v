@@ -6,20 +6,18 @@ import public.api.avldata { AvlData, CodecId, Priority, GpsElement }
 import internal.utils.bytebuffer { ByteBuffer }
 import internal.utils.coordinatemath as coordinate_math
 import internal.parser.transport.avl.bin.models { AvlBinData, GpsBinElement }
-import internal.parser.transport.avl.io as avl_io
+import internal.parser.transport.avl.io { IAvlIoElementParser, AvlIoElementParser }
 
 
 pub struct AvlBinParser implements IAvlBinParser {
-  avl_io_element_parser avl_io.IAvlIoElementParser
+  avl_io_element_parser IAvlIoElementParser
 }
 
 pub fn AvlBinParser.new() AvlBinParser {
-  return AvlBinParser {
-    avl_io_element_parser: avl_io.AvlIoElementParser.new(),
-  }
+  return AvlBinParser.new_test(AvlIoElementParser.new())
 }
 
-pub fn AvlBinParser.new_test(avl_io_element_parser avl_io.IAvlIoElementParser) AvlBinParser {
+pub fn AvlBinParser.new_test(avl_io_element_parser IAvlIoElementParser) AvlBinParser {
   return AvlBinParser {
     avl_io_element_parser: avl_io_element_parser,
   }

@@ -8,7 +8,7 @@ import internal.utils.bytebuffer { ByteBuffer }
 import tests.helpers.h_internal.h_parser.h_transport.h_avl.h_io as helpers_avl_io
 
 
-fn test_avl_io_element_parser_init() {
+fn test__new__should_init() {
   avl_io_element_parser := AvlIoElementParser.new()
 }
 
