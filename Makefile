@@ -10,23 +10,20 @@ example:
 	@zig build run_$(file)
 
 generate-docs:
-	@zig build docs
+	@rm -rf tmp/docs/zeltonika/html/
+	@v doc -m src/public/ -o tmp/docs/zeltonika/html/ -f html
 
 server-docs:
-	@python3 -m http.server 8080 -d zig-out/docs/
+	@python3 -m http.server 8080 -d tmp/docs/zeltonika/html/
 
 unit-tests:
-	@zig build unit-tests
+	@v test src/tests/unit_tests/
 
 integration-tests:
-	@zig build integration-tests
+	@v test src/tests/integration_tests/
 
 bench-tests:
-	@zig build bench-tests
-
-clean:
-	@rm -rf zig-out
+	@v test src/tests/bench/
 
 clean-all:
-	@rm -rf .zig-cache
-	@rm -rf zig-out
+	@rm -rf tmp/docs/zeltonika/
