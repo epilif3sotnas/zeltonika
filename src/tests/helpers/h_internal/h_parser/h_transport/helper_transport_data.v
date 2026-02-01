@@ -2,7 +2,7 @@ module h_transport
 
 
 // internal
-import public.api.avldata { TcpAvlData, AvlDataPacketHeader TcpAvlResponse, Crc16, UdpAvlData, UdpChannelHeader, AvlPacketHeader, UdpAvlResponse, AvlDataArray, CodecId }
+import public.api.avldata { TcpAvlData, AvlDataPacketHeader TcpAvlResponse, Crc16, UdpAvlData, UdpChannelHeader, AvlPacketHeader, UdpAvlResponse, AvlDataArray }
 
 
 pub const tcp_data_byte_array := [
@@ -19,13 +19,13 @@ pub fn tcp_data() TcpAvlData {
       data_field_length: 0x36
     }
     avl_data_array: AvlDataArray{
-      codec_id: CodecId.codec8
+      codec_id: .codec8
     }
     crc_16: Crc16 {
-        value: 0x13
+      value: 0x13
     }
     response: TcpAvlResponse {
-        response: 0x00
+      response: 0x00
     }
   }
 }
@@ -46,19 +46,19 @@ pub fn udp_data() UdpAvlData {
       not_usable_byte: 0x00
     }
     avl_packet_header: AvlPacketHeader {
-        avl_packet_id: 0x05
-        imei_length: 0x0f
-        imei: [u8(0x33), 0x35, 0x32, 0x30, 0x39, 0x33, 0x30, 0x38, 0x36, 0x34, 0x30, 0x33, 0x36, 0x35, 0x35]
+      avl_packet_id: 0x05
+      imei_length: 0x0f
+      imei: [u8(0x33), 0x35, 0x32, 0x30, 0x39, 0x33, 0x30, 0x38, 0x36, 0x34, 0x30, 0x33, 0x36, 0x35, 0x35]
     }
     avl_data_array: AvlDataArray {
-        codec_id: CodecId.codec8
+      codec_id: .codec8
     }
     response: UdpAvlResponse {
-        length: 0x003d
-        packet_id: 0xcafe
-        not_usable_byte: 0x00
-        avl_packet_id: 0x05
-        num_accepted_data: 0x00
+      length: 0x003d
+      packet_id: 0xcafe
+      not_usable_byte: 0x00
+      avl_packet_id: 0x05
+      num_accepted_data: 0x00
     }
   }
 }

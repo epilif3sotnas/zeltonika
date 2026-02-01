@@ -69,7 +69,6 @@ pub fn (self &TransportParser) encode_udp(mut byte_buffer ByteBuffer, udp_avl_da
 
   byte_buffer.put(u8(udp_avl_data.avl_data_array.codec_id))!
   self.encode_avl_data_array(mut byte_buffer, udp_avl_data.avl_data_array)!
-
 }
 
 fn (self &TransportParser) encode_avl_data_array(mut byte_buffer ByteBuffer, avl_data_array AvlDataArray) ! {
@@ -105,11 +104,11 @@ pub fn (mut self TransportParser) decode_tcp(mut byte_buffer ByteBuffer) !TcpAvl
       zero_bytes: avl_data_packed_header.zero_bytes
      	data_field_length: avl_data_packed_header.data_field_length
     }
-  	avl_data_array: avl_data_array
-  	crc_16: Crc16 {
+   	avl_data_array: avl_data_array
+   	crc_16: Crc16 {
       value: crc_value.value
     }
-  	response: TcpAvlResponse {
+   	response: TcpAvlResponse {
       response: avl_data_num_elements
     }
   }
@@ -137,19 +136,19 @@ pub fn (self &TransportParser) decode_udp(mut byte_buffer ByteBuffer) !UdpAvlDat
      	packet_id: udp_channel_header.packet_id
      	not_usable_byte: udp_channel_header.not_usable_byte
     }
-  	avl_packet_header: AvlPacketHeader {
+   	avl_packet_header: AvlPacketHeader {
       avl_packet_id: avl_packed_header.avl_packet_id
      	imei_length: avl_packed_header. imei_length
      	imei: imei
     }
-  	avl_data_array: avl_data_array
-  	response: UdpAvlResponse {
+   	avl_data_array: avl_data_array
+   	response: UdpAvlResponse {
       length: udp_channel_header.length
-    	packet_id: udp_channel_header.packet_id
-    	not_usable_byte: udp_channel_header.not_usable_byte
+     	packet_id: udp_channel_header.packet_id
+     	not_usable_byte: udp_channel_header.not_usable_byte
       avl_packet_id: avl_packed_header.avl_packet_id
      	num_accepted_data: u8(avl_data_array.data.len)
-   }
+    }
   }
 }
 
