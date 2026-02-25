@@ -11,7 +11,6 @@ import internal.parser.transport.models { AvlDataPacketHeaderPacked, UdpChannelH
 
 pub struct TransportParser implements ITransportParser {
 	avl_bin_parser IAvlBinParser
-mut:
 	crc ICrc
 }
 
@@ -29,7 +28,7 @@ pub fn TransportParser.new_test(avl_bin_parser IAvlBinParser, crc_obj ICrc) Tran
   }
 }
 
-pub fn (mut self TransportParser) encode_tcp(mut byte_buffer ByteBuffer, tcp_avl_data TcpAvlData) ! {
+pub fn (self &TransportParser) encode_tcp(mut byte_buffer ByteBuffer, tcp_avl_data TcpAvlData) ! {
   byte_buffer.put(
     AvlDataPacketHeaderPacked {
       zero_bytes: tcp_avl_data.avl_data_packet_header.zero_bytes
@@ -81,7 +80,7 @@ fn (self &TransportParser) encode_avl_data_array(mut byte_buffer ByteBuffer, avl
   byte_buffer.put(u8(avl_data_array.data.len))!
 }
 
-pub fn (mut self TransportParser) decode_tcp(mut byte_buffer ByteBuffer) !TcpAvlData {
+pub fn (self &TransportParser) decode_tcp(mut byte_buffer ByteBuffer) !TcpAvlData {
   avl_data_packed_header := byte_buffer.get[AvlDataPacketHeaderPacked]()!
   codec_id := CodecId.from(byte_buffer.get[u8]()!)!
 

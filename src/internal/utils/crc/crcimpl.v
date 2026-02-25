@@ -55,10 +55,11 @@ pub fn (self &Crc[T]) final() T {
   return T(result ^ u64(self.algorithm.xor_output))
 }
 
-pub fn (mut self Crc[T]) hash(data []u8) T {
-  self.init()
-  self.update(data)
-  return self.final()
+pub fn (self &Crc[T]) hash(data []u8) T {
+  mut crc := Crc.new[T](self.algorithm)
+  crc.init()
+  crc.update(data)
+  return crc.final()
 }
 
 fn init_lookup_table[T](algorithm Algorithm[T]) [256]u64 {
