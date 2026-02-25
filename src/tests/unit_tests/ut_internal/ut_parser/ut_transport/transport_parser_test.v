@@ -18,7 +18,7 @@ fn test__new__should_init() {
 }
 
 fn test__encode_tcp__should_write_to_the_buffer_tcp_avl_data() {
-  mut transport_parser := TransportParser.new_test(no_op_bin_parser, no_op_crc)
+  transport_parser := TransportParser.new_test(no_op_bin_parser, no_op_crc)
 
   mut buffer := ByteBuffer.new()
 
@@ -48,7 +48,7 @@ fn test__encode_udp__should_write_to_the_buffer_udp_avl_data() {
 }
 
 fn test__decode_tcp__should_read_from_the_buffer_a_tcp_avl_data() {
-  mut transport_parser := TransportParser.new_test(no_op_bin_parser, no_op_crc)
+  transport_parser := TransportParser.new_test(no_op_bin_parser, no_op_crc)
 
   data_to_decode := helpers_transport.tcp_data_byte_array
   mut buffer := ByteBuffer.from_bytes(data_to_decode)
