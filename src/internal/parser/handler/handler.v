@@ -24,9 +24,7 @@ pub fn ZeltonikaHandler.new_test(transport_parser ITransportParser) ZeltonikaHan
 
 pub fn (self &ZeltonikaHandler) encode_udp_bulk(data []Tuple[ByteBuffer, UdpAvlData]) ! {
 	for mut item in data {
-		mut byte_buffer := item.first
-		udp_avl_data := item.second
-		self.transport_parser.encode_udp(mut byte_buffer, udp_avl_data)!
+		self.transport_parser.encode_udp(mut item.first, item.second)!
 	}
 }
 
