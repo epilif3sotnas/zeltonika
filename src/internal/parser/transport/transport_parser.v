@@ -14,6 +14,7 @@ pub struct TransportParser implements ITransportParser {
 	crc ICrc
 }
 
+
 pub fn TransportParser.new() TransportParser {
   return TransportParser.new_test(
     AvlBinParser.new(),
