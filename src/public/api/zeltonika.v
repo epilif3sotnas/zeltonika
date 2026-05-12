@@ -36,7 +36,7 @@ pub struct Zeltonika {
 //
 // # Errors
 // Returns `ZeltonikaError` if initialization fails.
-pub fn Zeltonika.new() !Zeltonika {
+pub fn Zeltonika.new() Zeltonika {
 	config := ZeltonikaConfig{}
 
 	return Zeltonika.new(config)!
@@ -52,7 +52,7 @@ pub fn Zeltonika.new() !Zeltonika {
 //
 // # Errors
 // Returns `ZeltonikaError` if initialization fails.
-pub fn Zeltonika.new(config ZeltonikaConfig) !Zeltonika {
+pub fn Zeltonika.new(config ZeltonikaConfig) Zeltonika {
 	return Zeltonika {
 		config: config
 		zeltonikaHandler: ZeltonikaHandler.new()
