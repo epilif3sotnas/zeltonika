@@ -2,10 +2,9 @@ module api
 
 
 // internal
-import public.api.izeltonika { IZeltonika }
-import public.api.config.config { ZeltonikaConfig }
-import internal.parser.handler.ihandler { IZeltonikaHandler }
-import internal.parser.handler.handler { ZeltonikaHandler }
+import public.api.avldata { TcpAvlData, UdpAvlData }
+import public.api.config { ZeltonikaConfig }
+import internal.parser.handler { IZeltonikaHandler, ZeltonikaHandler }
 import internal.utils.bytebuffer { ByteBuffer }
 import internal.utils.tuple { Tuple }
 
@@ -23,9 +22,9 @@ import internal.utils.tuple { Tuple }
 //   - `decode_tcp_async_bulk`
 //   - `decode_udp_async`
 //   - `decode_udp_async_bulk`
-pub struct Zeltonika {
+pub struct Zeltonika implements IZeltonika {
 	config ZeltonikaConfig
-	zeltonikaHandler IZeltonikaHandler
+	zeltonika_handler IZeltonikaHandler
 }
 
 
@@ -37,9 +36,9 @@ pub struct Zeltonika {
 // # Errors
 // Returns `ZeltonikaError` if initialization fails.
 pub fn Zeltonika.new() Zeltonika {
-	config := ZeltonikaConfig{}
+	zeltonika_config := ZeltonikaConfig{}
 
-	return Zeltonika.new(config)!
+	return Zeltonika.new_with_config(zeltonika_config)
 }
 
 // new creates a new Zeltonika instance with the given config.
@@ -52,10 +51,10 @@ pub fn Zeltonika.new() Zeltonika {
 //
 // # Errors
 // Returns `ZeltonikaError` if initialization fails.
-pub fn Zeltonika.new(config ZeltonikaConfig) Zeltonika {
+pub fn Zeltonika.new_with_config(zeltonika_config ZeltonikaConfig) Zeltonika {
 	return Zeltonika {
-		config: config
-		zeltonikaHandler: ZeltonikaHandler.new()
+		config: zeltonika_config,
+		zeltonika_handler: ZeltonikaHandler.new(),
 	}
 }
 
@@ -84,17 +83,17 @@ pub fn (self &Zeltonika) encode_tcp(data TcpAvlData) ![]u8 {
 // # Errors
 // Returns `ZeltonikaError` if any encoding fails.
 pub fn (self &Zeltonika) encode_tcp_bulk(data []TcpAvlData) ![][]u8 {
-	mut tuples := []Tuple[mut ByteBuffer, TcpAvlData]{cap: data.len}
-	for item in data {
+  mut tuples := []Tuple{cap: data.len}
+ 	for item in data {
 		mut byte_buffer := ByteBuffer.with_capacity(1024)
-		tuples << Tuple.new[mut ByteBuffer, TcpAvlData](mut byte_buffer, item)
-	}
-	self.zeltonikaHandler.encode_tcp_bulk(tuples)!
-	mut results := [][]u8{cap: data.len}
-	for item in tuples {
+		tuples << Tuple.new(mut byte_buffer, item)
+ 	}
+ 	self.zeltonika_handler.encode_tcp_bulk(mut tuples)!
+ 	mut results := [][]u8{cap: data.len}
+ 	for item in tuples {
 		results << item.first.as_bytes()
-	}
-	return results
+ 	}
+ 	return results
 }
 
 // encode_tcp_async encodes a single TCP AVL data item to bytes asynchronously.
@@ -152,12 +151,12 @@ pub fn (self &Zeltonika) encode_udp(data UdpAvlData) ![]u8 {
 // # Errors
 // Returns `ZeltonikaError` if any encoding fails.
 pub fn (self &Zeltonika) encode_udp_bulk(data []UdpAvlData) ![][]u8 {
-	mut tuples := []Tuple[ByteBuffer, UdpAvlData]{cap: data.len}
+	mut tuples := []Tuple{cap: data.len}
 	for item in data {
 		mut byte_buffer := ByteBuffer.with_capacity(1024)
-		tuples << Tuple.new[ByteBuffer, UdpAvlData](byte_buffer, item)
+		tuples << Tuple.new(mut byte_buffer, item)
 	}
-	self.zeltonikaHandler.encode_udp_bulk(tuples)!
+	self.zeltonika_handler.encode_udp_bulk(mut tuples)!
 	mut results := [][]u8{cap: data.len}
 	for item in tuples {
 		results << item.first.as_bytes()
@@ -224,7 +223,7 @@ pub fn (self &Zeltonika) decode_tcp_bulk(data [][]u8) ![]TcpAvlData {
 	for item in data {
 		byte_buffers << ByteBuffer.from_bytes(item)
 	}
-	return self.zeltonikaHandler.decode_tcp_bulk(mut byte_buffers)!
+	return self.zeltonika_handler.decode_tcp_bulk(mut byte_buffers)!
 }
 
 // decode_tcp_async decodes a single TCP AVL data item from bytes asynchronously.
@@ -286,7 +285,7 @@ pub fn (self &Zeltonika) decode_udp_bulk(data [][]u8) ![]UdpAvlData {
 	for item in data {
 		byte_buffers << ByteBuffer.from_bytes(item)
 	}
-	return self.zeltonikaHandler.decode_udp_bulk(mut byte_buffers)!
+	return self.zeltonika_handler.decode_udp_bulk(mut byte_buffers)!
 }
 
 // decode_udp_async decodes a single UDP AVL data item from bytes asynchronously.
