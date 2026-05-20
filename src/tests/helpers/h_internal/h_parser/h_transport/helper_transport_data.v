@@ -2,7 +2,7 @@ module h_transport
 
 
 // internal
-import public.api.avldata { TcpAvlData, AvlDataPacketHeader TcpAvlResponse, Crc16, UdpAvlData, UdpChannelHeader, AvlPacketHeader, UdpAvlResponse, AvlDataArray }
+import public.api.avldata { TcpAvlData, AvlDataPacketHeader, TcpAvlResponse, Crc16, UdpAvlData, UdpChannelHeader, AvlPacketHeader, UdpAvlResponse, AvlDataArray }
 
 
 pub const tcp_data_byte_array := [
@@ -25,7 +25,7 @@ pub fn tcp_data() TcpAvlData {
       value: 0x13
     }
     response: TcpAvlResponse {
-      response: 0x00
+      response: 0x00_00_00_01
     }
   }
 }

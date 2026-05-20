@@ -1,6 +1,10 @@
 module api
 
 
+// internal
+import public.api.avldata { TcpAvlData, UdpAvlData }
+
+
 // IZeltonika is the public interface for the
 // public API of this library.
 //
