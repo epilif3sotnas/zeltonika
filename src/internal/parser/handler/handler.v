@@ -14,9 +14,9 @@ pub struct ZeltonikaHandler implements IZeltonikaHandler {
 
 
 pub fn ZeltonikaHandler.new() ZeltonikaHandler {
-  return ZeltonikaHandler.new_test(
-    TransportParser.new(),
-  )
+    return ZeltonikaHandler.new_test(
+        TransportParser.new(),
+    )
 }
 
 pub fn ZeltonikaHandler.new_test(transport_parser ITransportParser) ZeltonikaHandler {
@@ -35,7 +35,7 @@ pub fn (self &ZeltonikaHandler) decode_udp_bulk(mut byte_buffers []ByteBuffer) !
 	mut results := []UdpAvlData{ cap: byte_buffers.len }
 
 	for mut byte_buffer in byte_buffers {
-	  byte_buffer.reset_position()
+        byte_buffer.reset_position()
 		udp_avl_data := self.transport_parser.decode_udp(mut byte_buffer)!
 		results << udp_avl_data
 	}
@@ -53,7 +53,7 @@ pub fn (self &ZeltonikaHandler) decode_tcp_bulk(mut byte_buffers []ByteBuffer) !
 	mut results := []TcpAvlData{ cap: byte_buffers.len }
 
 	for mut byte_buffer in byte_buffers {
-    byte_buffer.reset_position()
+        byte_buffer.reset_position()
 		tcp_avl_data := self.transport_parser.decode_tcp(mut byte_buffer)!
 		results << tcp_avl_data
 	}
