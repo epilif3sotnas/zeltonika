@@ -5,6 +5,7 @@ module transport
 import public.api.avldata { TcpAvlData, AvlDataPacketHeader TcpAvlResponse, Crc16, UdpAvlData, UdpChannelHeader, AvlPacketHeader, UdpAvlResponse, AvlData, AvlDataArray, CodecId }
 import internal.parser.transport.avl.bin { IAvlBinParser, AvlBinParser }
 import internal.parser.transport.crc { ICrc, Crc }
+import internal.parser.transport.errors { CrcError, AvlPacketSizeError }
 import internal.utils.bytebuffer { ByteBuffer }
 import internal.parser.transport.models { AvlDataPacketHeaderPacked, UdpChannelHeaderPacked, AvlPacketHeaderPacked, Crc16Packed }
 
@@ -12,6 +13,7 @@ import internal.parser.transport.models { AvlDataPacketHeaderPacked, UdpChannelH
 pub struct TransportParser implements ITransportParser {
 	avl_bin_parser IAvlBinParser
 	crc ICrc
+	avl_packet_size_limits map[string]usize
 }
 
 
@@ -23,10 +25,11 @@ pub fn TransportParser.new() TransportParser {
 }
 
 pub fn TransportParser.new_test(avl_bin_parser IAvlBinParser, crc_obj ICrc) TransportParser {
-  return TransportParser {
-    avl_bin_parser: avl_bin_parser
-    crc: crc_obj
-  }
+    return TransportParser {
+        avl_bin_parser: avl_bin_parser
+        crc: crc_obj
+        avl_packet_size_limits: { "max": usize(1280), "min": usize(45) }
+    }
 }
 
 pub fn (self &TransportParser) encode_tcp(mut byte_buffer ByteBuffer, tcp_avl_data TcpAvlData) ! {
@@ -82,74 +85,77 @@ fn (self &TransportParser) encode_avl_data_array(mut byte_buffer ByteBuffer, avl
 }
 
 pub fn (self &TransportParser) decode_tcp(mut byte_buffer ByteBuffer) !TcpAvlData {
-  avl_data_packed_header := byte_buffer.get[AvlDataPacketHeaderPacked]()!
-  codec_id := CodecId.from(byte_buffer.get[u8]()!)!
+    self.check_avl_packet_size(byte_buffer)!
 
-  crc_start_pos := usize(byte_buffer.position() - 1)
+    avl_data_packed_header := byte_buffer.get[AvlDataPacketHeaderPacked]()!
+    codec_id := CodecId.from(byte_buffer.get[u8]()!)!
 
-  avl_data_array := self.decode_avl_data_array(mut byte_buffer, codec_id)!
-  avl_data_num_elements := byte_buffer.get[u8]()!
+    crc_start_pos := usize(byte_buffer.position() - 1)
 
-  crc_value := byte_buffer.get[Crc16Packed]()!
+    avl_data_array := self.decode_avl_data_array(mut byte_buffer, codec_id)!
+    avl_data_num_elements := byte_buffer.get[u8]()!
 
-  byte_buffer.set_new_position(crc_start_pos)!
-  crc_calculated := self.crc.calculate(byte_buffer.from_position())
-  byte_buffer.reset_position_last()
+    crc_value := byte_buffer.get[Crc16Packed]()!
 
-  // TODO: Check if CRC is valid
-  is_crc_valid := crc_value.value == crc_calculated
+    crc_calculated := self.crc.calculate(byte_buffer.slice(crc_start_pos, byte_buffer.position() - 4)!)
 
-  return TcpAvlData {
-    avl_data_packet_header: AvlDataPacketHeader {
-      zero_bytes: avl_data_packed_header.zero_bytes
-     	data_field_length: avl_data_packed_header.data_field_length
+    if crc_value.value != crc_calculated {
+        return CrcError.new(none, none, crc_calculated, u16(crc_value.value))
     }
-   	avl_data_array: avl_data_array
-   	crc_16: Crc16 {
-      value: crc_value.value
+
+    return TcpAvlData {
+        avl_data_packet_header: AvlDataPacketHeader {
+            zero_bytes: avl_data_packed_header.zero_bytes
+           	data_field_length: avl_data_packed_header.data_field_length
+        }
+       	avl_data_array: avl_data_array
+       	crc_16: Crc16 {
+            value: crc_value.value
+        }
+       	response: TcpAvlResponse {
+            response: avl_data_num_elements
+        }
     }
-   	response: TcpAvlResponse {
-      response: avl_data_num_elements
-    }
-  }
 }
 
 pub fn (self &TransportParser) decode_udp(mut byte_buffer ByteBuffer) !UdpAvlData {
-  udp_channel_header := byte_buffer.get[UdpChannelHeaderPacked]()!
-  avl_packed_header := byte_buffer.get[AvlPacketHeaderPacked]()!
+    self.check_avl_packet_size(byte_buffer)!
 
-  mut imei := []u8{}
+    udp_channel_header := byte_buffer.get[UdpChannelHeaderPacked]()!
+    avl_packed_header := byte_buffer.get[AvlPacketHeaderPacked]()!
 
-  for _ in 0 .. avl_packed_header.imei_length {
-    imei << byte_buffer.get[u8]()!
-  }
+    mut imei := []u8{}
 
-  codec_id := CodecId.from(byte_buffer.get[u8]()!)!
-  avl_data_array := self.decode_avl_data_array(mut byte_buffer, codec_id)!
-
-  // Ignore 2 Avl Data Number of Elements
-  _ := byte_buffer.get[u8]()!
-
-  return UdpAvlData {
-    udp_channel_header: UdpChannelHeader {
-      length: udp_channel_header.length
-     	packet_id: udp_channel_header.packet_id
-     	not_usable_byte: udp_channel_header.not_usable_byte
+    for _ in 0 .. avl_packed_header.imei_length {
+        imei << byte_buffer.get[u8]()!
     }
-   	avl_packet_header: AvlPacketHeader {
-      avl_packet_id: avl_packed_header.avl_packet_id
-     	imei_length: avl_packed_header. imei_length
-     	imei: imei
+
+    codec_id := CodecId.from(byte_buffer.get[u8]()!)!
+    avl_data_array := self.decode_avl_data_array(mut byte_buffer, codec_id)!
+
+    // Ignore second Avl Data Number of Elements
+    _ := byte_buffer.get[u8]()!
+
+    return UdpAvlData {
+        udp_channel_header: UdpChannelHeader {
+            length: udp_channel_header.length
+           	packet_id: udp_channel_header.packet_id
+           	not_usable_byte: udp_channel_header.not_usable_byte
+        }
+       	avl_packet_header: AvlPacketHeader {
+            avl_packet_id: avl_packed_header.avl_packet_id
+           	imei_length: avl_packed_header. imei_length
+           	imei: imei
+        }
+       	avl_data_array: avl_data_array
+       	response: UdpAvlResponse {
+            length: udp_channel_header.length
+           	packet_id: udp_channel_header.packet_id
+           	not_usable_byte: udp_channel_header.not_usable_byte
+            avl_packet_id: avl_packed_header.avl_packet_id
+           	num_accepted_data: u8(avl_data_array.data.len)
+        }
     }
-   	avl_data_array: avl_data_array
-   	response: UdpAvlResponse {
-      length: udp_channel_header.length
-     	packet_id: udp_channel_header.packet_id
-     	not_usable_byte: udp_channel_header.not_usable_byte
-      avl_packet_id: avl_packed_header.avl_packet_id
-     	num_accepted_data: u8(avl_data_array.data.len)
-    }
-  }
 }
 
 fn (self &TransportParser) decode_avl_data_array(mut byte_buffer ByteBuffer, codec_id CodecId) !AvlDataArray {
@@ -165,4 +171,16 @@ fn (self &TransportParser) decode_avl_data_array(mut byte_buffer ByteBuffer, cod
     codec_id: codec_id
     data: avl_data_elements
   }
+}
+
+fn (self &TransportParser) check_avl_packet_size(byte_buffer ByteBuffer) ! {
+    avl_packet_size := usize(byte_buffer.bytes_remaining())
+
+    if avl_packet_size < self.avl_packet_size_limits["min"] {
+        return AvlPacketSizeError.new(none, none, .min, avl_packet_size, self.avl_packet_size_limits["min"])
+    }
+
+    if avl_packet_size > self.avl_packet_size_limits["max"] {
+        return AvlPacketSizeError.new(none, none, .max, avl_packet_size, self.avl_packet_size_limits["max"])
+    }
 }
