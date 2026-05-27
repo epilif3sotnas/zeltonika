@@ -2,7 +2,7 @@ module ut_byte_buffer
 
 
 // internal
-import internal.utils.bytebuffer { ByteBuffer, ByteBufferError, PositionOutOfBoundsError, NotEnoughDataError, ReadOnlyBufferError }
+import internal.utils.bytebuffer { ByteBuffer, ByteBufferError, PositionOutOfBoundsError, NotEnoughDataError, ReadOnlyBufferError, FromToEqualError, FromBiggerThanToError }
 
 
 fn test__new__should_return_an_empty_byte_buffer() {
@@ -19,22 +19,22 @@ fn test__from_bytes__should_return_a_byte_buffer_with_data_from_param() {
 
 	buffer := ByteBuffer.from_bytes(input)
 
-  assert input == buffer.as_bytes()
-  assert buffer.size() == usize(input.len)
-  assert buffer.capacity() == usize(input.len)
-  assert buffer.position() == usize(input.len)
-  assert buffer.is_read_only() == false
+    assert input == buffer.as_bytes()
+    assert buffer.size() == usize(input.len)
+    assert buffer.capacity() == usize(input.len)
+    assert buffer.position() == usize(input.len)
+    assert buffer.is_read_only() == false
 }
 
 fn test__with_capacity__should_return_empty_byte_buffer_with_capacity_100() {
-  capacity := usize(100)
+    capacity := usize(100)
 
-  buffer := ByteBuffer.with_capacity(capacity)
+    buffer := ByteBuffer.with_capacity(capacity)
 
-  assert buffer.size() == 0
-  assert buffer.capacity() == capacity
-  assert buffer.position() == 0
-  assert buffer.is_read_only() == false
+    assert buffer.size() == 0
+    assert buffer.capacity() == capacity
+    assert buffer.position() == 0
+    assert buffer.is_read_only() == false
 }
 
 fn test__clear__should_clear_the_data_that_was_on_the_buffer() {
@@ -121,8 +121,7 @@ fn test__set_new_position__should_return_out_of_bounds_error() {
 
 	buffer.set_new_position(10) or {
 		assert err is ByteBufferError
-		byte_buffer_error := err as ByteBufferError
-		assert byte_buffer_error.err is PositionOutOfBoundsError
+		assert (err as ByteBufferError).cause is PositionOutOfBoundsError
 		return
 	}
 	assert false
@@ -134,6 +133,17 @@ fn test__set_read_only__should_make_buffer_read_only() {
 	buffer.set_read_only()
 
 	assert buffer.is_read_only() == true
+}
+
+fn test__bytes_remaining__should_return_bytes_remaining() {
+    input := [u8(1), 2, 3, 4, 5, 6, 7, 8, 9]
+    mut buffer := ByteBuffer.from_bytes(input[..])
+    buffer.set_new_position(3)!
+
+    expected := usize(6)
+    actual := buffer.bytes_remaining()
+
+    assert expected == actual
 }
 
 fn test__as_bytes__should_return_array() {
@@ -174,6 +184,68 @@ fn test__to_position__should_return_subset() {
 
   assert expected.len == actual.len
   assert expected == actual
+}
+
+fn test__slice__should_return_subset() {
+    input := [u8(0x01), 0x02, 0x03, 0x04]
+    buffer := ByteBuffer.from_bytes(input)
+
+    expected := [u8(0x02), 0x03]
+    actual := buffer.slice(1, 3)!
+
+    assert expected == actual
+}
+
+fn test__slice__should_return_from_to_equal_error() {
+    input := [u8(0x01), 0x02, 0x03, 0x04]
+    buffer := ByteBuffer.from_bytes(input)
+
+    actual := buffer.slice(1, 1) or {
+        assert err is ByteBufferError
+		assert (err as ByteBufferError).cause is FromToEqualError
+		return
+    }
+
+    assert false
+}
+
+fn test__slice__should_return_from_bigger_than_to_error() {
+    input := [u8(0x01), 0x02, 0x03, 0x04]
+    buffer := ByteBuffer.from_bytes(input)
+
+    actual := buffer.slice(2, 1) or {
+        assert err is ByteBufferError
+		assert (err as ByteBufferError).cause is FromBiggerThanToError
+		return
+    }
+
+    assert false
+}
+
+fn test__slice__should_return_out_of_bounds_error_from() {
+    input := [u8(0x01), 0x02, 0x03, 0x04]
+    buffer := ByteBuffer.from_bytes(input)
+
+    actual := buffer.slice(5, 7) or {
+        assert err is ByteBufferError
+		assert (err as ByteBufferError).cause is PositionOutOfBoundsError
+		return
+    }
+
+    assert false
+}
+
+fn test__slice__should_return_out_of_bounds_error_to() {
+    input := [u8(0x01), 0x02, 0x03, 0x04]
+    buffer := ByteBuffer.from_bytes(input)
+
+    actual := buffer.slice(2, 5) or {
+        assert err is ByteBufferError
+        assert (err as ByteBufferError).cause is PositionOutOfBoundsError
+		return
+    }
+
+    assert false
 }
 
 @[packed]
@@ -293,9 +365,8 @@ fn test__get__should_return_not_enough_data_error() {
 	buffer.reset_position()
 
 	buffer.get[TestStruct]() or {
-		assert err is ByteBufferError
-		byte_buffer_error := err as ByteBufferError
-		assert byte_buffer_error.err is NotEnoughDataError
+    	assert err is ByteBufferError
+    	assert (err as ByteBufferError).cause is NotEnoughDataError
 		return
 	}
 	assert false
@@ -325,9 +396,8 @@ fn test__put__should_return_read_only_error() {
 	buffer.set_read_only()
 
 	buffer.put[u8](0x01) or {
-		assert err is ByteBufferError
-		byte_buffer_error := err as ByteBufferError
-		assert byte_buffer_error.err is ReadOnlyBufferError
+	    assert err is ByteBufferError
+    	assert (err as ByteBufferError).cause is ReadOnlyBufferError
 		return
 	}
 	assert false

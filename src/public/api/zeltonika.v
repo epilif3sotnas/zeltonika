@@ -4,8 +4,9 @@ module api
 // internal
 import public.api.avldata { TcpAvlData, UdpAvlData }
 import public.api.config { ZeltonikaConfig }
+import public.api.errors { ZeltonikaError }
 import internal.parser.handler { IZeltonikaHandler, ZeltonikaHandler }
-import internal.utils.bytebuffer { ByteBuffer }
+import internal.utils.bytebuffer { ByteBuffer, ByteBufferError }
 import internal.utils.tuple { Tuple }
 
 
@@ -69,7 +70,7 @@ pub fn Zeltonika.new_with_config(zeltonika_config ZeltonikaConfig) Zeltonika {
 // # Errors
 // Returns `ZeltonikaError` if encoding fails.
 pub fn (self &Zeltonika) encode_tcp(data TcpAvlData) ![]u8 {
-	return self.encode_tcp_bulk([data])![0]
+    return self.encode_tcp_bulk([data])![0]
 }
 
 // encode_tcp_bulk encodes multiple TCP AVL data items to bytes.
@@ -83,12 +84,14 @@ pub fn (self &Zeltonika) encode_tcp(data TcpAvlData) ![]u8 {
 // # Errors
 // Returns `ZeltonikaError` if any encoding fails.
 pub fn (self &Zeltonika) encode_tcp_bulk(data []TcpAvlData) ![][]u8 {
-  mut tuples := []Tuple{cap: data.len}
+    mut tuples := []Tuple{cap: data.len}
  	for item in data {
 		mut byte_buffer := ByteBuffer.with_capacity(1024)
 		tuples << Tuple.new(mut byte_buffer, item)
  	}
- 	self.zeltonika_handler.encode_tcp_bulk(mut tuples)!
+ 	self.zeltonika_handler.encode_tcp_bulk(mut tuples) or {
+        return ZeltonikaError.new(none, err)
+    }
  	mut results := [][]u8{cap: data.len}
  	for item in tuples {
 		results << item.first.as_bytes()
@@ -137,7 +140,7 @@ pub fn (self &Zeltonika) encode_tcp_async_bulk(data []TcpAvlData) ![][]u8 {
 // # Errors
 // Returns `ZeltonikaError` if encoding fails.
 pub fn (self &Zeltonika) encode_udp(data UdpAvlData) ![]u8 {
-	return self.encode_udp_bulk([data])![0]
+    return self.encode_udp_bulk([data])![0]
 }
 
 // encode_udp_bulk encodes multiple UDP AVL data items to bytes.
@@ -156,7 +159,9 @@ pub fn (self &Zeltonika) encode_udp_bulk(data []UdpAvlData) ![][]u8 {
 		mut byte_buffer := ByteBuffer.with_capacity(1024)
 		tuples << Tuple.new(mut byte_buffer, item)
 	}
-	self.zeltonika_handler.encode_udp_bulk(mut tuples)!
+	self.zeltonika_handler.encode_udp_bulk(mut tuples) or {
+        return ZeltonikaError.new(none, err)
+    }
 	mut results := [][]u8{cap: data.len}
 	for item in tuples {
 		results << item.first.as_bytes()
@@ -205,7 +210,7 @@ pub fn (self &Zeltonika) encode_udp_async_bulk(data []UdpAvlData) ![][]u8 {
 // # Errors
 // Returns `ZeltonikaError` if decoding fails or data is invalid.
 pub fn (self &Zeltonika) decode_tcp(data []u8) !TcpAvlData {
-	return self.decode_tcp_bulk([data])![0]
+    return self.decode_tcp_bulk([data])![0]
 }
 
 // decode_tcp_bulk decodes multiple TCP AVL data items from bytes.
@@ -223,7 +228,9 @@ pub fn (self &Zeltonika) decode_tcp_bulk(data [][]u8) ![]TcpAvlData {
 	for item in data {
 		byte_buffers << ByteBuffer.from_bytes(item)
 	}
-	return self.zeltonika_handler.decode_tcp_bulk(mut byte_buffers)!
+	return self.zeltonika_handler.decode_tcp_bulk(mut byte_buffers) or {
+        return ZeltonikaError.new(none, err)
+    }
 }
 
 // decode_tcp_async decodes a single TCP AVL data item from bytes asynchronously.
@@ -285,7 +292,9 @@ pub fn (self &Zeltonika) decode_udp_bulk(data [][]u8) ![]UdpAvlData {
 	for item in data {
 		byte_buffers << ByteBuffer.from_bytes(item)
 	}
-	return self.zeltonika_handler.decode_udp_bulk(mut byte_buffers)!
+	return self.zeltonika_handler.decode_udp_bulk(mut byte_buffers) or {
+        return ZeltonikaError.new(none, err)
+    }
 }
 
 // decode_udp_async decodes a single UDP AVL data item from bytes asynchronously.

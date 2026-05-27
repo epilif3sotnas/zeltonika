@@ -5,6 +5,9 @@ module integration_tests
 import public.api { Zeltonika }
 import public.api.avldata { AvlData, AvlDataArray, AvlIoElement, CodecId, GpsElement, Priority, AvlDataPacketHeader, TcpAvlData, TcpAvlResponse, Crc16, AvlPacketHeader, UdpAvlData, UdpAvlResponse, UdpChannelHeader }
 import public.api.config { ZeltonikaConfig }
+import public.api.errors as zeltonika_errors { ZeltonikaError }
+import internal.parser.transport.errors as transport_errors { AvlPacketSizeError, CrcError }
+import internal.utils.bytebuffer { ByteBufferError, NotEnoughDataError }
 import tests.helpers.h_avldata as helpers_avldata
 
 
@@ -236,64 +239,234 @@ fn test__decode_udp_bulk__codec16__with_real_data() {
 	assert actual == expected
 }
 
-// // ============================================================================
-// // Error handling tests
-// // ============================================================================
+// ============================================================================
+// Error handling tests
+// ============================================================================
 
-// fn test__decode_tcp__should_fail_on_corrupted_data() {
-// 	z := Zeltonika.new()
+fn test__decode_tcp__should_return_a_crc_error() {
+   	zeltonika_lib := Zeltonika.new()
 
-// 	// Valid encoded data
-// 	tcp_data := create_sample_tcp_avl_data()
-// 	mut encoded := z.encode_tcp(tcp_data)!
+    mut data_to_decode := helpers_avldata.tcp_data_byte_array_codec8.clone()
+    // Modifying the crc value to trigger mismatch
+    data_to_decode[data_to_decode.len - 1] = data_to_decode[data_to_decode.len - 1] ^ 0xFF
 
-// 	// Corrupt a byte in the middle
-// 	encoded[10] ^= 0xFF
+   	zeltonika_lib.decode_tcp(data_to_decode) or {
+  		assert err is ZeltonikaError
+  		assert (err as ZeltonikaError).cause is CrcError
+  		return
+   	}
 
-// 	decoded := z.decode_tcp(encoded) or {
-// 		assert true // Expected to fail
-// 		return
-// 	}
-// 	assert false // Should not reach here
-// }
+   	assert false
+}
 
-// fn test__decode_udp__should_fail_on_corrupted_data() {
-// 	z := Zeltonika.new()
+fn test__decode_tcp_bulk__should_return_a_crc_error() {
+   	zeltonika_lib := Zeltonika.new()
 
-// 	// Valid encoded data
-// 	udp_data := create_sample_udp_avl_data()
-// 	mut encoded := z.encode_udp(udp_data)!
+    mut data_to_decode := [
+        helpers_avldata.tcp_data_byte_array_codec8.clone(),
+        helpers_avldata.tcp_data_byte_array_codec8.clone(),
+    ]
+    // Modifying the crc value to trigger mismatch
+    data_to_decode[0][data_to_decode[0].len - 1] = data_to_decode[0][data_to_decode[0].len - 1] ^ 0xFF
+    data_to_decode[1][data_to_decode[1].len - 1] = data_to_decode[1][data_to_decode[1].len - 1] ^ 0xFF
 
-// 	// Corrupt a byte in the middle
-// 	encoded[15] ^= 0xFF
+   	zeltonika_lib.decode_tcp_bulk(data_to_decode) or {
+  		assert err is ZeltonikaError
+  		assert (err as ZeltonikaError).cause is CrcError
+  		return
+   	}
 
-// 	decoded := z.decode_udp(encoded) or {
-// 		assert true // Expected to fail
-// 		return
-// 	}
-// 	assert false // Should not reach here
-// }
+   	assert false
+}
 
-// fn test__decode_tcp__should_fail_on_empty_data() {
-// 	z := Zeltonika.new()
+fn test__decode_tcp__should_with_avl_packet_size_error_min() {
+	z := Zeltonika.new()
 
-// 	empty_data := []u8{}
+	small_payload := [u8(1),2,3,4,5]
 
-// 	decoded := z.decode_tcp(empty_data) or {
-// 		assert true // Expected to fail
-// 		return
-// 	}
-// 	assert false // Should not reach here
-// }
+	z.decode_tcp(small_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
 
-// fn test__decode_udp__should_fail_on_empty_data() {
-// 	z := Zeltonika.new()
+fn test__decode_tcp_bulk__should_with_avl_packet_size_error_min() {
+	z := Zeltonika.new()
 
-// 	empty_data := []u8{}
+	small_payload := [
+    	[u8(1),2,3,4,5],
+    	[u8(1),2,3,4,5],
+	]
 
-// 	decoded := z.decode_udp(empty_data) or {
-// 		assert true // Expected to fail
-// 		return
-// 	}
-// 	assert false // Should not reach here
-// }
+	z.decode_tcp_bulk(small_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_udp__should_with_avl_packet_size_error_min() {
+	z := Zeltonika.new()
+
+	small_payload := [u8(1),2,3,4,5]
+
+	z.decode_udp(small_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_udp_bulk__should_with_avl_packet_size_error_min() {
+	z := Zeltonika.new()
+
+	small_payload := [
+    	[u8(1),2,3,4,5],
+    	[u8(1),2,3,4,5],
+	]
+
+	z.decode_udp_bulk(small_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_tcp__should_with_avl_packet_size_error_max() {
+	z := Zeltonika.new()
+
+	large_payload := [2000]u8{}[..]
+
+	z.decode_tcp(large_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_tcp_bulk__should_with_avl_packet_size_error_max() {
+	z := Zeltonika.new()
+
+	large_payload := [
+    	[2000]u8{}[..],
+    	[2000]u8{}[..],
+	]
+
+	z.decode_tcp_bulk(large_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_udp__should_with_avl_packet_size_error_max() {
+	z := Zeltonika.new()
+
+	large_payload := [2000]u8{}[..]
+
+	z.decode_udp(large_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_udp_bulk__should_with_avl_packet_size_error_max() {
+	z := Zeltonika.new()
+
+	large_payload := [
+    	[2000]u8{}[..],
+    	[2000]u8{}[..],
+	]
+
+	z.decode_udp_bulk(large_payload) or {
+		assert err is ZeltonikaError
+		assert (err as ZeltonikaError).cause is AvlPacketSizeError
+		return
+	}
+	assert false
+}
+
+fn test__decode_tcp__should_return_a_not_enough_data_error() {
+   	zeltonika_lib := Zeltonika.new()
+
+    mut data_to_decode := helpers_avldata.tcp_data_byte_array_codec8.clone()
+    // remove last element to trigger not enought data error
+    data_to_decode.pop()
+
+   	zeltonika_lib.decode_tcp(data_to_decode) or {
+  		assert err is ZeltonikaError
+  		assert (err as ZeltonikaError).cause is ByteBufferError
+  		assert ((err as ZeltonikaError).cause as ByteBufferError).cause is NotEnoughDataError
+  		return
+   	}
+
+   	assert false
+}
+
+fn test__decode_tcp_bulk__should_return_a_not_enough_data_error() {
+   	zeltonika_lib := Zeltonika.new()
+
+    mut element := helpers_avldata.tcp_data_byte_array_codec8.clone()
+    // remove last element to trigger not enought data error
+    element.pop()
+    mut data_to_decode := [
+        element.clone(),
+        element.clone(),
+    ]
+
+   	zeltonika_lib.decode_tcp_bulk(data_to_decode) or {
+  		assert err is ZeltonikaError
+  		assert (err as ZeltonikaError).cause is ByteBufferError
+  		assert ((err as ZeltonikaError).cause as ByteBufferError).cause is NotEnoughDataError
+  		return
+   	}
+
+   	assert false
+}
+
+fn test__decode_udp__should_return_a_not_enough_data_error() {
+   	zeltonika_lib := Zeltonika.new()
+
+    mut data_to_decode := helpers_avldata.udp_data_byte_array_codec8.clone()
+    // remove last element to trigger not enought data error
+    data_to_decode.pop()
+
+   	zeltonika_lib.decode_udp(data_to_decode) or {
+  		assert err is ZeltonikaError
+  		assert (err as ZeltonikaError).cause is ByteBufferError
+  		assert ((err as ZeltonikaError).cause as ByteBufferError).cause is NotEnoughDataError
+  		return
+   	}
+
+   	assert false
+}
+
+fn test__decode_udp_bulk__should_return_a_not_enough_data_error() {
+   	zeltonika_lib := Zeltonika.new()
+
+    mut element := helpers_avldata.udp_data_byte_array_codec8.clone()
+    // remove last element to trigger not enought data error
+    element.pop()
+    mut data_to_decode := [
+        element.clone(),
+        element.clone(),
+    ]
+
+   	zeltonika_lib.decode_udp_bulk(data_to_decode) or {
+  		assert err is ZeltonikaError
+  		assert (err as ZeltonikaError).cause is ByteBufferError
+  		assert ((err as ZeltonikaError).cause as ByteBufferError).cause is NotEnoughDataError
+  		return
+   	}
+
+   	assert false
+}
