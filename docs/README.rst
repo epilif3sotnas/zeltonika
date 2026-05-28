@@ -39,11 +39,11 @@ Zeltonika is used in the following example.
 
     zeltonika := Zeltonika.new()
 
-    encoded_tcp := zeltonika.encode_tcp(data)!;
-    encoded_udp := zeltonika.encode_udp(data)!;
+    encoded_tcp := zeltonika.encode_tcp(data)!
+    encoded_udp := zeltonika.encode_udp(data)!
 
-    decoded_tcp := zeltonika.decode_tcp(data)!;
-    decoded_udp := zeltonika.decode_udp(data)!;
+    decoded_tcp := zeltonika.decode_tcp(data)!
+    decoded_udp := zeltonika.decode_udp(data)!
 
 See this `examples <../examples/>`_.
 
