@@ -11,17 +11,17 @@ import public.api.avldata { TcpAvlData, AvlDataPacketHeader, TcpAvlResponse, Crc
 pub const tcp_data_byte_array_codec8 := hex.decode('000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF')!
 
 pub fn tcp_data_codec8() TcpAvlData {
-  mut n1_elements := map[u16][]u8{}
+    mut n1_elements := map[u16][]u8{}
 	n1_elements[0x15] = [u8(0x03)]
 	n1_elements[0x01] = [u8(0x01)]
 
-  mut n2_elements := map[u16][]u8{}
+    mut n2_elements := map[u16][]u8{}
 	n2_elements[0x42] = [u8(0x5E), 0x0F]
 
-  mut n4_elements := map[u16][]u8{}
+    mut n4_elements := map[u16][]u8{}
 	n4_elements[0xF1] = [u8(0x00), 0x00, 0x60, 0x1A]
 
-  mut n8_elements := map[u16][]u8{}
+    mut n8_elements := map[u16][]u8{}
 	n8_elements[0x4E] = [u8(0x00), 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
 
   return TcpAvlData {
@@ -67,11 +67,11 @@ pub fn tcp_data_codec8() TcpAvlData {
 pub const udp_data_byte_array_codec8 := hex.decode('003DCAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000103021503010101425DBC000001')!
 
 pub fn udp_data_codec8() UdpAvlData {
-  mut n1_elements := map[u16][]u8{}
+    mut n1_elements := map[u16][]u8{}
 	n1_elements[0x15] = [u8(0x03)]
 	n1_elements[0x01] = [u8(0x01)]
 
-  mut n2_elements := map[u16][]u8{}
+    mut n2_elements := map[u16][]u8{}
 	n2_elements[0x42] = [u8(0x5D), 0xBC]
 
   return UdpAvlData {

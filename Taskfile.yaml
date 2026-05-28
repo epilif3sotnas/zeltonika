@@ -1,0 +1,47 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task: compile
+
+  compile:
+    cmds:
+      - zig build
+
+  compile-release:
+    cmds:
+      - zig build -Drelease-safe
+
+  example:
+    vars:
+      file: '{{ .file | default "encode_tcp" }}'
+    cmds:
+      - rm -rf ~/.vmodules/zeltonika/
+      - cp -r zeltonika/ ~/.vmodules/
+      - v run examples/{{ .file }}.v
+
+  generate-docs:
+    cmds:
+      - rm -rf tmp/docs/zeltonika/html/
+      - v doc -m zeltonika/public/ -o tmp/docs/zeltonika/html/ -f html
+
+  server-docs:
+    cmds:
+      - python3 -m http.server 8080 -d tmp/docs/zeltonika/html/
+
+  unit-tests:
+    cmds:
+      - v test zeltonika/tests/unit_tests/
+
+  integration-tests:
+    cmds:
+      - v test zeltonika/tests/integration_tests/
+
+  bench-tests:
+    cmds:
+      - v test zeltonika/tests/bench/
+
+  clean-all:
+    cmds:
+      - rm -rf tmp/docs/zeltonika/
