@@ -7,43 +7,43 @@ This library is lightweight and simple to use as a decoder and encoder for these
 
 Installation
 ------------
-Compatible Zig Version: `0.16.0`
+Compatible Vlang Version: `0.4.12`
 
 Zeltonika is installed with the following steps.
 
 .. code-block:: bash
     :linenos:
 
-    zig fetch --save git+https://github.com/epilif3sotnas/zeltonika#<TAG>
+    v install https://github.com/epilif3sotnas/zeltonika#<TAG>
 
-You can then add the dependency in your `build.zig` file:
+You should also add the dependency in your `v.mod` file:
 
 .. code-block:: zig
     :linenos:
 
-    const zeltonika = b.dependency("zeltonika", .{
-        .target = target,
-        .optimize = optimize,
-    }).module("zeltonika");
-
-    exe.root_module.addImport(zeltonika);
+    Module {
+    	name: 'examples'
+    	description: 'Library to parse Teltonika codecs.'
+    	version: '0.0.0'
+    	license: 'Apache-2.0 license'
+    	dependencies: ['github.com/epilif3sotnas/zeltonika']
+    }
 
 
 Usage
 -----
 Zeltonika is used in the following example.
 
-.. code-block:: zig
+.. code-block:: v
     :linenos:
 
-    const zeltonika = try Zeltonika.init(allocator, config);
-    defer zeltonika.deinit();
+    zeltonika := Zeltonika.new()
 
-    const encoded_tcp = try zeltonika.encodeTcp(data);
-    const encoded_udp = try zeltonika.encodeUdp(data);
+    encoded_tcp := zeltonika.encode_tcp(data)!;
+    encoded_udp := zeltonika.encode_udp(data)!;
 
-    const decoded_tcp = try zeltonika.decodeTcp(data);
-    const decoded_udp = try zeltonika.decodeUdp(data);
+    decoded_tcp := zeltonika.decode_tcp(data)!;
+    decoded_udp := zeltonika.decode_udp(data)!;
 
 See this `examples <../examples/>`_.
 
