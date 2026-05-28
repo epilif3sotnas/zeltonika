@@ -26,7 +26,7 @@ You should also add the dependency in your `v.mod` file:
     	description: 'Library to parse Teltonika codecs.'
     	version: '0.0.0'
     	license: 'Apache-2.0 license'
-    	dependencies: ['github.com/epilif3sotnas/zeltonika']
+    	dependencies: ['github.com/epilif3sotnas/zeltonika@<TAG>']
     }
 
 
