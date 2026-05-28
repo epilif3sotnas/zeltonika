@@ -14,7 +14,7 @@ Zeltonika is installed with the following steps.
 .. code-block:: bash
     :linenos:
 
-    v install https://github.com/epilif3sotnas/zeltonika#<TAG>
+    v install https://github.com/epilif3sotnas/zeltonika@<TAG>
 
 You should also add the dependency in your `v.mod` file:
 
