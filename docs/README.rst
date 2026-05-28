@@ -53,11 +53,6 @@ FAQ
 Zeltonika FAQ.
 
 
-Changelog
----------
-See our `changelog <./CHANGELOG.rst>`_ to check the modifications for each version.
-
-
 Contributing
 ------------
 See our `contributing docs <./CONTRIBUTING.rst>`_ to be part of our contributors.
