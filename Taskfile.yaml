@@ -18,8 +18,10 @@ tasks:
       file: '{{ .file | default "encode_tcp" }}'
     cmds:
       - rm -rf ~/.vmodules/zeltonika/
-      - cp -r zeltonika/ ~/.vmodules/
+      - mkdir -p ~/.vmodules/zeltonika/
+      - cp -r zeltonika/ v.mod ~/.vmodules/zeltonika/
       - v run examples/{{ .file }}.v
+      - rm -rf ~/.vmodules/zeltonika/
 
   generate-docs:
     cmds:
@@ -41,6 +43,10 @@ tasks:
   bench-tests:
     cmds:
       - v test zeltonika/tests/bench/
+
+  all-tests:
+    cmds:
+      - v test zeltonika/tests/
 
   clean-all:
     cmds:
