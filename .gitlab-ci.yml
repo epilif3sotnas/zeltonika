@@ -1,0 +1,11 @@
+# GitLab CI placeholder.
+# Pipelines are disabled on main and otherwise contain one successful no-op job.
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: never
+    - when: always
+
+noop:
+  script:
+    - ':'

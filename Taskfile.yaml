@@ -1,19 +1,15 @@
 version: '3'
 
+silent: true
+
 tasks:
   default:
+    desc: 'List available tasks'
     cmds:
-      - task: compile
-
-  compile:
-    cmds:
-      - zig build
-
-  compile-release:
-    cmds:
-      - zig build -Drelease-safe
+      - '{{.TASK_EXE}} --list'
 
   example:
+    desc: 'Run an example program (default: encode_tcp)'
     vars:
       file: '{{ .file | default "encode_tcp" }}'
     cmds:
@@ -24,30 +20,37 @@ tasks:
       - rm -rf ~/.vmodules/zeltonika/
 
   generate-docs:
+    desc: 'Generate HTML API documentation'
     cmds:
       - rm -rf tmp/docs/zeltonika/html/
       - v doc -m zeltonika/public/ -o tmp/docs/zeltonika/html/ -f html
 
   server-docs:
+    desc: 'Serve generated documentation on port 8080'
     cmds:
       - python3 -m http.server 8080 -d tmp/docs/zeltonika/html/
 
   unit-tests:
+    desc: 'Run unit tests'
     cmds:
       - v test zeltonika/tests/unit_tests/
 
   integration-tests:
+    desc: 'Run integration tests'
     cmds:
       - v test zeltonika/tests/integration_tests/
 
   bench-tests:
+    desc: 'Run benchmark tests'
     cmds:
       - v test zeltonika/tests/bench/
 
   all-tests:
+    desc: 'Run all tests'
     cmds:
       - v test zeltonika/tests/
 
   clean-all:
+    desc: 'Remove generated documentation'
     cmds:
       - rm -rf tmp/docs/zeltonika/

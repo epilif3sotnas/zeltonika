@@ -10,3 +10,23 @@ trim_trailing_whitespace = true
 
 [*.{bat,cmd}]
 end_of_line = crlf
+
+[*.{json,yaml,yml}]
+indent_size = 2
+
+[*.{sh,zsh,bash}]
+indent_size = 2
+
+[*.{png,jpg,jpeg,gif,ico,svg,woff,woff2,eot,ttf,otf,pdf}]
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+[*.{html,xml,xhtml}]
+indent_size = 2
+
+[*.{js,ts,jsx,tsx,mjs,cjs}]
+indent_size = 2
+
+[*.{css,scss,less}]
+indent_size = 2

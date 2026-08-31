@@ -1,0 +1,4 @@
+[submodule ".kiro/skills"]
+    path = .kiro/skills
+    url = git@gitlab.com:epilif3sotnas-products/repo-templates/git-modules-templates/kiro.git
+    branch = main
